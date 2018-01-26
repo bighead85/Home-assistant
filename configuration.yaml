@@ -169,6 +169,12 @@ alexa:
     hastatus:
       title: Home Assistant Status
       text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} people watching plex
+    tempread:
+      title: Flat Temperaute
+      text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees
+    plexread:
+     title: People watching Plex
+     text: There are {{ states("sensor.plex_server") }} people watching plex
 
 
 sensor:
