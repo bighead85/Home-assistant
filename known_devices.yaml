@@ -1,0 +1,213 @@
+#Amazon echos
+amazon99283b81a:
+  name: Living Room Echo
+  icon: mdi:speaker-wireless
+  mac: 38:F7:3D:4A:90:14
+  picture:
+  track: true
+  vendor: Amazon Technologies Inc.
+
+amazon50bb2db8b:
+  icon: mdi:speaker
+  mac: 78:E1:03:41:F3:D0
+  name: Olivia Dot
+  track: true
+  vendor: Amazon Technologies Inc.
+
+amazon58ab7f748:
+  icon: mdi:speaker
+  mac: 00:FC:8B:03:6A:93
+  name: Bedroom Dot
+  picture:
+  track: true
+  vendor: Amazon Technologies Inc.
+
+#Home Devices
+alexastick:
+  icon: mdi:amazon
+  mac: 18:74:2E:5B:30:DC
+  name: AlexaStick
+  picture:
+  track: true
+  vendor: Amazon Technologies Inc.
+
+smarthub:
+  icon: mdi:server
+  mac: B8:27:EB:4B:CB:FA
+  name: SmartHub
+  track: true
+  vendor: Raspberry Pi Foundation
+
+gwa0cc2b6d71bb:
+  name: IKEA Gateway
+  icon: mdi:amazon-clouddrive
+  mac: A0:CC:2B:6D:71:BB
+  track: true
+  vendor: Murata Manufacturing Co., Ltd.
+
+utvpc:
+  icon: mdi:kodi
+  mac: B8:AE:ED:76:98:E4
+  name: Media Server
+  picture:
+  track: true
+  vendor: Intel NUC i5.
+
+
+#Computers and Portable Devices
+amazone6c04a152:
+  hide_if_away: true
+  icon: mdi:tablet-android
+  mac: 88:71:E5:E4:76:4E
+  name: Fire8 Tablet
+  picture:
+  track: true
+  vendor: Amazon Technologies Inc.
+
+oneplus:
+  hide_if_away: true
+  icon: mdi:cellphone-android
+  mac: C0:EE:FB:25:D9:30
+  name: OnePlus
+  track: true
+  vendor: OnePlus Tech (Shenzhen) Ltd
+
+mpxub:
+  hide_if_away: true
+  icon: mdi:laptop
+  mac: 68:A3:C4:CD:80:40
+  name: MPXUB
+  track: true
+  vendor: Toshiba Satellite
+
+'302060046':
+  icon: mdi:laptop
+  hide_if_away: true
+  mac: 34:02:86:B6:3D:89
+  name: MP Work Laptop
+  track: true
+  vendor: Lenovo ThinkPad
+
+galaxytaba2016:
+  hide_if_away: true
+  icon:
+  mac: DC:66:72:7B:33:93
+  name: Galaxy-Tab-A-2016
+  picture:
+  track: true
+  vendor: Samsung Electronics Co.,Ltd
+
+android971615cbbd54ac3b:
+  hide_if_away: true
+  icon:
+  mac: 58:48:22:A2:F9:47
+  name: android-971615cbbd54ac3b
+  picture:
+  track: true
+  vendor: Sony Mobile Communications AB
+
+mac:
+  hide_if_away: true
+  icon:
+  mac: 00:1E:C2:BD:E7:04
+  name: mac
+  picture:
+  track: true
+  vendor: Apple, Inc.
+
+mac_2:
+  hide_if_away: true
+  icon:
+  mac: 00:1E:C2:1C:C9:91
+  name: mac
+  picture:
+  track: true
+  vendor: Apple, Inc.
+
+android4f65b70f2a7b4409:
+  hide_if_away: true
+  icon:
+  mac: 00:E3:B2:02:11:AC
+  name: android-4f65b70f2a7b4409
+  picture:
+  track: true
+  vendor: Samsung Electronics Co.,Ltd
+
+raspberrypi:
+  hide_if_away: true
+  icon:
+  mac: B8:27:EB:4D:BF:EC
+  name: raspberrypi
+  picture:
+  track: true
+  vendor: unknown
+
+markwork:
+  hide_if_away: true
+  icon: mdi:cellphone
+  mac: 9C:6C:15:26:F1:B4
+  name: Mark-Work
+  track: true
+  vendor: Microsoft Corporation
+
+mpxub_2:
+  hide_if_away: false
+  icon:
+  mac: E8:9D:87:34:C1:24
+  name: MPXUB
+  picture:
+  track: true
+  vendor: Toshiba
+
+'302060046_2':
+  hide_if_away: false
+  icon:
+  mac: 68:F7:28:CA:F0:6E
+  name: 3020-60046
+  picture:
+  track: true
+  vendor: LCFC(HeFei) Electronics Technology co., ltd
+
+bedroom:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:1E:9E:AF
+  name: bedroom
+  picture:
+  track: true
+  vendor: unknown
+
+androidacd38dcf86a5d273:
+  hide_if_away: false
+  icon:
+  mac: 00:E0:4C:24:E4:B2
+  name: android-acd38dcf86a5d273
+  picture:
+  track: true
+  vendor: REALTEK SEMICONDUCTOR CORP.
+
+chromecast:
+  hide_if_away: false
+  icon:
+  mac: 6C:AD:F8:AA:2C:41
+  name: Chromecast
+  picture:
+  track: true
+  vendor: AzureWave Technology Inc.
+
+chromecast_2:
+  hide_if_away: false
+  icon:
+  mac: 6C:AD:F8:75:6A:AF
+  name: Chromecast
+  picture:
+  track: true
+  vendor: AzureWave Technology Inc.
+
+unknown_0017fac6f0bb:
+  hide_if_away: false
+  icon:
+  mac: 00:17:FA:C6:F0:BB
+  name: unknown 00:17:FA:C6:F0:BB
+  picture:
+  track: true

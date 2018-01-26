@@ -1,0 +1,144 @@
+- name: Work
+  entities:
+     light.sofa_main:
+      state: off
+     light.sofa_lamp:
+       state: off
+     light.dining_main:
+        state: on
+        brightness: 255
+        color_temp: 249
+     light.desk_lamp:
+       state: on
+       brightness: 255
+       kelvin: 4000
+
+- name: Lounge Normal
+  entities:
+     light.sofa_main:
+       state: on
+       brightness: 178
+       color_temp: 370
+     light.dining_main:
+       state: on
+       brightness: 178
+       color_temp: 370
+     light.sofa_lamp:
+       state: off
+     light.desk_lamp:
+      state: off
+
+- name: Lounge Relax
+  entities:
+     light.sofa_main:
+       state: off
+     light.dining_main:
+       state: off
+     light.sofa_lamp:
+       state: on
+       brightness: 255
+       kelvin: 2200
+     light.desk_lamp:
+       state: on
+       brightness: 255
+       kelvin: 2200
+
+- name: Lounge Focus
+  entities:
+     light.sofa_main:
+       state: on
+       brightness: 255
+       color_temp: 249
+     light.dining_main:
+       state: on
+       brightness: 255
+       color_temp: 249
+     light.sofa_lamp:
+       state: off
+     light.desk_lamp:
+      state: off
+
+- name: Sofa Relax
+  entities:
+    light.sofa_main:
+      state: off
+    light.dining_main:
+      state: off
+    light.sofa_lamp:
+       state: on
+       brightness: 255
+       kelvin: 2200
+    light.desk_lamp:
+       state: off
+
+- name: Olivia Room Normal
+  entities:
+     light.olivia_main:
+       state: on
+       brightness: 178
+       color_temp: 370
+     light.olivia_lamp:
+      state: off
+
+- name: Olivia Room Bright
+  entities:
+     light.olivia_main:
+       state: on
+       brightness: 255
+       color_temp: 249
+     light.olivia_lamp:
+       state: off
+
+- name: Olivia Room Bedtime
+  entities:
+     light.olivia_main:
+       state: off
+     light.olivia_lamp:
+      state: on
+      brightness: 10
+      kelvin: 2200
+
+- name: Olivia Room Story Time
+  entities:
+     light.olivia_main:
+       state: off
+     light.olivia_lamp:
+      state: on
+      brightness: 255
+      kelvin: 2200
+
+- name: Bedroom Bedtime
+  entities:
+     group.bed_group:
+       state: on
+       brightness: 5
+       transition: 0
+       kelvin: 2200
+
+- name: Bedroom Bright
+  entities:
+     group.bed_group:
+       state: on
+       brightness: 255
+       transition: 0
+       kelvin: 4000
+
+#Ikea Colours Default Moods
+#Everyday
+ # {
+ #   "entity_id": "light.sofa_main",
+ #   "brightness": 178,
+ #   "color_temp": 370
+ # }
+#Focus
+ # {
+ #   "entity_id": "light.sofa_main",
+ #   "brightness": 255,
+ #   "color_temp": 249
+ # }
+#Relax
+ # {
+ #   "entity_id": "light.sofa_main",
+ #   "brightness": 25,
+ #   "color_temp":458
+ # }

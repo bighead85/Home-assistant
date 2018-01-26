@@ -1,0 +1,236 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 51.4167
+  longitude: -0.1333
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/London
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+  javascript_version: latest
+  themes: !include_dir_merge_named themes/
+# Enables configuration UI
+config:
+
+#Theme front page by user select
+input_select:
+  hass_theme:
+    name: Themes
+    options:
+      - default
+      - night
+    initial: default
+    icon: mdi:theme-light-dark
+
+  alarm_zone:
+    name: Alarm Zone
+    options:
+      - Mark Bedroom
+      - Olivia Bedroom
+      - Lounge
+      - All
+      - None
+    initial: None
+    icon: mdi:map-marker
+
+input_boolean:
+  alexa_alarm:
+    name: Alexa Alarm
+    initial: off
+    icon: mdi:run
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  base_url: bighead85.duckdns.org
+  ssl_certificate: "/etc/letsencrypt/live/bighead85.duckdns.org/fullchain.pem"
+  ssl_key: "/etc/letsencrypt/live/bighead85.duckdns.org/privkey.pem"
+
+#Link my IFTTT Maker
+ifttt:
+  key: !secret ifttt
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+#discovery:
+
+#Networked Devices
+device_tracker:
+  platform: bt_home_hub_5
+  host: 192.168.137.254
+
+#Ikea Lights
+tradfri:
+   host: "192.168.137.35"
+#   #api_key: "qEaisFnQT23cUC3R" #Not needed since version 57
+
+
+media_player:
+  #Bedroom OSMC
+  - platform: kodi
+    port: 1025
+    username: !secret bedusr
+    password: !secret bedpwd
+    host: 192.168.137.12
+    name: bedroom
+  #Alexa Stick Kodi (TV)
+  - platform: kodi
+    port: 1025
+    username: !secret tvusr
+    password: !secret tvpwd
+    host: 192.168.137.29
+    name: TV
+  #UTVPC Kodi
+  - platform: kodi
+    port: 1025
+    username: !secret utvpcusr
+    password: !secret utvpcpwd
+    host: 192.168.137.1
+    name: server
+  #Alexa Stick All (TV)
+  - platform: firetv
+    name: Fire
+
+#Caravan Monitor
+panel_iframe:
+  caravan:
+    title: 'Caravan'
+    icon: 'mdi:caravan'
+    url: 'http://80.229.21.42:8585/'
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+#logbook:
+
+# Enables a map showing the location of tracked devices
+#map:
+
+
+switch:
+  #Energenie Switches
+  platform: command_line
+  switches:
+    coffee:
+      friendly_name: Coffee Machine
+      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=1#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=1#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_state: '/usr/bin/test -e /var/www/html/son1.lock && echo 0 || echo 1'
+      value_template: '{{ value == "0" }}'
+    echo:
+      friendly_name: Amazon Echo
+      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=2#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=2#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_state: '/usr/bin/test -e /var/www/html/son2.lock && echo 0 || echo 1'
+      value_template: '{{ value == "0" }}'
+    desk:
+      friendly_name: Desk
+      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=3#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=3#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_state: '/usr/bin/test -e /var/www/html/son3.lock && echo 0 || echo 1'
+      value_template: '{{ value == "0" }}'
+    bookcase:
+      friendly_name: Bookcase
+      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=4#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=4#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_state: '/usr/bin/test -e /var/www/html/son4.lock && echo 0 || echo 1'
+      value_template: '{{ value == "0" }}'
+
+# Track the sun
+sun:
+
+#Alexa Readback
+alexa:
+  flash_briefings:
+    hastatus:
+      title: Home Assistant Status
+      text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} people watching plex
+
+
+sensor:
+    # Weather prediction
+  - platform: yweather
+    woeid: 56182146
+    name: Outside
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+      - weather_current
+      - temperature
+    #Inside Temp
+  - platform: command_line
+    name: Inside Temp
+    command: /usr/bin/php -r 'echo round(shell_exec("/usr/local/bin/temper-poll -c"))+3;'
+    unit_of_measurement: "°C"
+    scan_interval: 600
+    #Plex Server
+  - platform: plex
+    host: 192.168.137.1
+    port: 32400
+    name: Plex Server
+    username: !secret plexusr
+    password: !secret plexpwd
+
+#camera image
+camera:
+  - platform: local_file
+    name: Current Image
+    file_path: /var/www/html/images/camera.jpg
+
+#Fake buttons for Alexa config
+emulated_hue:
+  host_ip: 192.168.137.12
+  off_maps_to_on_domains:
+    - script
+  expose_by_default: false
+  exposed_domains:
+    - switch
+    - script
+    - scene
+
+#Restart Bedroom restart_osmc
+shell_command:
+  restartosmc: echo homeassistant | sudo -S systemctl restart mediacenter
+  reboot: echo homeassistant | sudo -S reboot
+# Text to speech
+tts:
+  - platform: google
+
+#Notifications from PushBullet
+notify:
+  - name: pushbullet
+    platform: pushbullet
+    api_key: o.oRhxoZGb7gmdtgGHkJzJIZjPL3ajM9Vv
+
+
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

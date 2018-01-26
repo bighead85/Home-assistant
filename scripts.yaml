@@ -1,0 +1,58 @@
+  update_library:
+    alias: Kodi Update
+    sequence:
+        alias: Kodi Update
+        service: media_player.kodi_call_method
+        data:
+          entity_id: media_player.server
+          method: VideoLibrary.Scan
+
+  restart_osmc:
+    alias: Restart OSMC
+    sequence:
+      - service: shell_command.restartosmc
+  reboot:
+    alias: Reboot SmartHub
+    sequence:
+      - service: shell_command.reboot
+  fire_pause:
+    alias: Fire Pause
+    sequence:
+      service: media_player.media_pause
+      data:
+        entity_id: media_player.fire
+  fire_play:
+    alias: Fire Play
+    sequence:
+      service: media_player.media_play
+      data:
+        entity_id: media_player.fire
+  bedroom_pause:
+    alias: Bedroom Pause
+    sequence:
+      service: media_player.media_pause
+      data:
+        entity_id: media_player.bedroom
+  bedroom_play:
+    alias: Bedroom Play
+    sequence:
+      service: media_player.media_play
+      data:
+        entity_id: media_player.bedroom
+  tv_stop:
+    alias: TV Stop
+    sequence:
+      service: media_player.media_stop
+      data:
+        entity_id: media_player.tv
+  bedroom_stop:
+    alias: Bedroom Stop
+    sequence:
+      service: media_player.media_stop
+      data:
+        entity_id: media_player.bedroom
+  find_my_phone:
+    alias: "Find Mark's Phone"
+    sequence:
+      service: ifttt.trigger
+      data: {"event": "where_phone"}

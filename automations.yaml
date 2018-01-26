@@ -1,0 +1,160 @@
+  - alias: Update notifications
+    trigger:
+      - platform: state
+        entity_id: updater.updater
+    action:
+      - service: notify.pushbullet
+        data_template:
+          title: 'New Home Assistant Release'
+          target: 'email/mpatterson190285@gmail.com' #See Pushbullet component for usage
+          message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
+  #IF user changes Theme
+  - alias: hass_theme
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: input_select.hass_theme
+    action:
+      - service: frontend.set_theme
+        data_template:
+          name: "{{ states.input_select.hass_theme.state }}"
+      - service: input_select.select_option
+        entity_id: input_select.hass_theme
+        data:
+           option: "{{ states.input_select.hass_theme.state }}"
+  #IF sun down change Theme
+  - alias: Automatic Theme Change
+    trigger:
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: sun.sun
+    action:
+      - service_template: frontend.set_theme
+        data_template:
+          name: >
+            {% if states.sun.sun.state == "above_horizon" %}
+              default
+            {% else %}
+              night
+            {% endif %}
+      - service: input_select.select_option
+        entity_id: input_select.hass_theme
+        data:
+           option: >
+             {% if states.sun.sun.state == "above_horizon" %}
+               default
+             {% else %}
+               night
+             {% endif %}
+
+##########Alexa Alarms
+  - alias: Alexa Alarm - Mark Bedroom
+    trigger:
+      - platform: state
+        entity_id: input_boolean.alexa_alarm
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.alarm_zone
+        state: 'Mark Bedroom'
+    action:
+      - service: light.turn_on
+        entity_id: group.bed_group
+        data:
+           brightness: 255
+           transition: 1800
+           kelvin: 2200
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_alarm
+      - service: input_select.select_option
+        entity_id: input_select.alarm_zone
+        data:
+           option: None
+
+  - alias: Alexa Alarm - Olivia Bedroom
+    trigger:
+      - platform: state
+        entity_id: input_boolean.alexa_alarm
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.alarm_zone
+        state: 'Olivia Bedroom'
+    action:
+      - service: light.turn_on
+        entity_id: light.olivia_lamp
+        data:
+           brightness: 255
+           transition: 1800
+           kelvin: 2200
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_alarm
+      - service: input_select.select_option
+        entity_id: input_select.alarm_zone
+        data:
+           option: None
+
+  - alias: Alexa Alarm - Lounge
+    trigger:
+      - platform: state
+        entity_id: input_boolean.alexa_alarm
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.alarm_zone
+        state: 'Lounge'
+    action:
+      - service: light.turn_on
+        entity_id: [light.sofa_lamp,light.desk_lamp]
+        data:
+           brightness: 255
+           transition: 1800
+           kelvin: 2200
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_alarm
+      - service: input_select.select_option
+        entity_id: input_select.alarm_zone
+        data:
+           option: None
+
+  - alias: Alexa Alarm - All
+    trigger:
+      - platform: state
+        entity_id: input_boolean.alexa_alarm
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.alarm_zone
+        state: 'All'
+    action:
+      - service: light.turn_on
+        entity_id: [group.bed_group,light.olivia_lamp,light.lounge_lamps]
+        data:
+           brightness: 255
+           transition: 1800
+           kelvin: 2200
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_alarm
+      - service: input_select.select_option
+        entity_id: input_select.alarm_zone
+        data:
+           option: None
+
+  - alias: Alexa Alarm - Off
+    trigger:
+      - platform: state
+        entity_id: input_boolean.alexa_alarm
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.alarm_zone
+        state: 'None'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.alexa_alarm
+      - service: input_select.select_option
+        entity_id: input_select.alarm_zone
+        data:
+           option: None
+##########Alexa Alarms

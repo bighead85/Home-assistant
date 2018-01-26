@@ -1,0 +1,180 @@
+#views
+  default_view:
+
+  home_view:
+    name: Smart Controls
+    view: yes
+    icon: mdi:remote
+    entities:
+      - sensor.inside_temp
+      - sensor.plex_server
+      - group.living_room
+      - group.main_bedroom
+      - group.liv_bedroom
+      - group.flat_group
+
+
+  weather_view:
+    name: Weather
+    view: yes
+    icon: mdi:weather-partlycloudy
+    entities:
+      - device_tracker.oneplus
+      - device_tracker.amazone6c04a152
+      - device_tracker.302060046
+      - device_tracker.mpxub
+      - device_tracker.mac
+      - sensor.lounge_main_remote
+      - sensor.left_remote
+      - sensor.right_remote
+      - sensor.liv_main_remote
+      - sensor.liv_lamp_remote
+      - sensor.inside_temp
+      - sun.sun
+      - sensor.outside_temperature
+      - group.current_group
+      - group.forecast_group
+
+  monitor_view:
+    name: Smart Monitor
+    view: yes
+    icon: mdi:monitor-multiple
+    entities:
+      - device_tracker.oneplus
+      - device_tracker.amazone6c04a152
+      - device_tracker.302060046
+      - device_tracker.mpxub
+      - device_tracker.mac
+      - sensor.lounge_main_remote
+      - sensor.left_remote
+      - sensor.right_remote
+      - sensor.liv_main_remote
+      - sensor.liv_lamp_remote
+      - sensor.inside_temp
+      - sensor.outside_temperature
+      - group.devices_group
+      - group.lights_group
+      - group.switches_group
+      - group.theme_group
+
+
+#groups
+  living_room:
+    name: Living Room
+    entities:
+      - scene.lounge_normal
+      - scene.lounge_relax
+      - light.sofa_main
+      - light.sofa_lamp
+      - scene.sofa_relax
+      - light.dining_main
+      - light.desk_lamp
+      - scene.lounge_focus
+      - switch.echo
+      - switch.desk
+      - scene.work
+      - media_player.tv
+
+  main_bedroom:
+    name: "Mark's Bedroom"
+    entities:
+      - scene.bedroom_bedtime
+      - group.bed_group
+      - scene.bedroom_bright
+      - switch.bookcase
+      - media_player.bedroom
+
+  liv_bedroom:
+    name: "Olivia's Bedroom"
+    entities:
+      - scene.olivia_room_normal
+      - light.olivia_main
+      - scene.olivia_room_bright
+      - light.olivia_lamp
+      - scene.olivia_room_story_time
+      - scene.olivia_room_bedtime
+
+
+  devices_group:
+    name: Smart Home
+    entities:
+      - switch.coffee
+      - sensor.plex_server
+      - device_tracker.utvpc
+      - script.update_library
+      - device_tracker.alexastick
+      - device_tracker.smarthub
+      - device_tracker.gwa0cc2b6d71bb
+      - device_tracker.amazon58ab7f748
+      - device_tracker.amazon50bb2db8b
+      - device_tracker.amazon99283b81a
+
+  lights_group:
+    name: Lights
+    entities:
+      - light.sofa_main
+      - light.sofa_lamp
+      - light.dining_main
+      - light.desk_lamp
+      - group.bed_group
+      - light.olivia_main
+      - light.olivia_lamp
+
+  switches_group:
+    name: Switches
+    entities:
+      - switch.coffee
+      - switch.echo
+      - switch.desk
+      - switch.bookcase
+
+  flat_group:
+    name: Flat Controls
+    entities:
+      - script.find_my_phone
+      - switch.coffee
+      - script.update_library
+      - input_select.alarm_zone
+
+  mark_group:
+    name: "Mark's Devices"
+    entities:
+      - script.find_my_phone
+      - device_tracker.oneplus
+      - device_tracker.mpxub
+      - device_tracker.302060046
+      - device_tracker.markwork
+      - device_tracker.amazone6c04a152
+
+  bed_group:
+     entities:
+      - light.left
+      - light.right
+
+  alarm_group:
+    name: Alexa Alarm
+    icon: mdi:alarm
+    entities:
+      - input_boolean.alexa_alarm
+      - input_select.alarm_zone
+
+
+  theme_group:
+    name: Select theme
+    entities:
+      - input_select.hass_theme
+
+  current_group:
+    name: Current Conditions
+    entities:
+      - sensor.inside_temp
+      - sensor.outside_temperature
+      - sensor.outside_current
+      - camera.current_image
+
+  forecast_group:
+    name: "Today's Forecast"
+    entities:
+      - sensor.outside_condition
+      - sensor.outside_temperature_max
+      - sensor.outside_temperature_min

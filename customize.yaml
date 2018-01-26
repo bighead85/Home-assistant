@@ -1,0 +1,127 @@
+light.left:
+  friendly_name: Left Panel
+  icon: mdi:square
+  hidden: true
+light.right:
+  friendly_name: Right Panel
+  icon: mdi:square
+  hidden: true
+light.dining_main:
+  friendly_name: Dining Main
+  icon: mdi:ceiling-light
+light.desk_lamp:
+  friendly_name: Desk Lamp
+  icon: mdi:lamp
+light.sofa_main:
+  friendly_name: Sofa Main
+  icon: mdi:ceiling-light
+light.sofa_lamp:
+  friendly_name: Sofa Lamp
+  icon: mdi:lamp
+light.olivia_lamp:
+  friendly_name: Olivia Lamp
+  icon: mdi:lamp
+light.olivia_main:
+  friendly_name: Olivia Main
+  icon: mdi:ceiling-light
+media_player.kodi:
+  friendly_name: Bedroom Kodi
+light.left_2:
+  friendly_name: Left Remote
+  hidden: true
+light.right_2:
+  friendly_name: Right Remote
+  hidden: true
+light.liv_room:
+  hidden: true
+light.lounge:
+  hidden: true
+group.bed_group:
+  friendly_name: Bed Lights
+  icon: mdi:square
+sensor.plex_server:
+  icon: mdi:plex
+sensor.weather_current:
+  friendly_name: Current Weather
+sensor.weather_temperature:
+  friendly_name: Current Outside Temperature
+sensor.outside_current:
+  friendly_name: Weather
+sensor.inside_temp:
+  friendly_name: Temp Inside
+sensor.outside_temperature:
+  friendly_name: Temp Outside
+sensor.outside_condition:
+  friendly_name: Forecast
+sensor.outside_temperature_max:
+  friendly_name: Max Temp
+sensor.outside_temperature_min:
+  friendly_name: Min Temp
+switch.coffee:
+  icon: mdi:coffee
+  emulated_hue_hidden: false
+switch.bookcase:
+  icon: mdi:book-open-variant
+  emulated_hue_hidden: false
+switch.echo:
+  icon: mdi:speaker-wireless
+  emulated_hue_hidden: false
+switch.desk:
+  icon: mdi:desktop-mac
+  emulated_hue_hidden: false
+script.fire_pause:
+  emulated_hue_hidden: false
+  icon: mdi:pause-circle
+script.fire_play:
+  emulated_hue_hidden: false
+  icon: mdi:play-circle
+script.bedroom_pause:
+  emulated_hue_hidden: false
+  icon: mdi:pause-circle
+script.bedroom_play:
+  emulated_hue_hidden: false
+  icon: mdi:play-circle
+script.bedroom_stop:
+  emulated_hue_hidden: false
+  icon: mdi:stop-circle
+script.tv_stop:
+  emulated_hue_hidden: false
+  icon: mdi:stop-circle
+script.update_library:
+  icon: mdi:kodi
+script.find_my_phone:
+  icon: mdi:phone-in-talk
+  emulated_hue: true
+scene.bedroom_bright:
+  emulated_hue: true
+  icon: mdi:brightness-5
+scene.bedroom_bedtime:
+  emulated_hue: true
+  icon: mdi:hotel
+scene.lounge_normal:
+  emulated_hue: true
+  icon: mdi:brightness-auto
+scene.lounge_focus:
+  emulated_hue: true
+  icon: mdi:brightness-5
+scene.lounge_relax:
+  emulated_hue: true
+  icon: mdi:sofa
+scene.sofa_relax:
+  emulated_hue: true
+  icon: mdi:sofa
+scene.work:
+  emulated_hue: true
+  icon: mdi:briefcase
+scene.olivia_room_bright:
+  emulated_hue: true
+  icon: mdi:brightness-5
+scene.olivia_room_normal:
+  emulated_hue: true
+  icon: mdi:brightness-auto
+scene.olivia_room_bedtime:
+  emulated_hue: true
+  icon: mdi:hotel
+scene.olivia_room_story_time:
+  emulated_hue: true
+  icon: mdi:book-open-variant
