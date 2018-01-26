@@ -174,7 +174,7 @@ alexa:
 sensor:
     # Weather prediction
   - platform: yweather
-    woeid: 56182146
+    woeid: !secret weather
     name: Outside
     monitored_conditions:
       - weather
