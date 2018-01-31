@@ -116,7 +116,7 @@ panel_iframe:
   caravan:
     title: 'Caravan'
     icon: 'mdi:caravan'
-    url: !secret caravan
+    url: 'http://80.229.21.42:8585/'
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -168,13 +168,24 @@ alexa:
   flash_briefings:
     hastatus:
       title: Home Assistant Status
-      text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} people watching plex
+      text: >
+        Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} plex viewers.
+        {% for attr in states.sensor.plex_server.attributes %}
+         {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" -%}
+          {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}}
+         {%- endif %}
+        {%- endfor -%}
     tempread:
       title: Flat Temperaute
       text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees
     plexread:
-     title: People watching Plex
-     text: There are {{ states("sensor.plex_server") }} people watching plex
+     title: Plex users equals {{ states("sensor.plex_server") }}
+     text: >
+        {% for attr in states.sensor.plex_server.attributes %}
+         {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" -%}
+          {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}}
+         {%- endif %}
+        {%- endfor -%}
 
 
 sensor:
@@ -231,7 +242,7 @@ tts:
 notify:
   - name: pushbullet
     platform: pushbullet
-    api_key: !secret pushbullet
+    api_key: o.oRhxoZGb7gmdtgGHkJzJIZjPL3ajM9Vv
 
 
 
