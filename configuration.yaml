@@ -116,7 +116,7 @@ panel_iframe:
   caravan:
     title: 'Caravan'
     icon: 'mdi:caravan'
-    url: 'http://80.229.21.42:8585/'
+    url: !secret caravan
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
