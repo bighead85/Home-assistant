@@ -8,3 +8,5 @@ Home assistant on Raspberry Pi 3
 * emulated hue for Alexa controls
 * IFTTT for Alexa integrations
 * USB Temperature sensor
+* Weather Forecasts from Yahoo
+* Alexa Flash Briefings
