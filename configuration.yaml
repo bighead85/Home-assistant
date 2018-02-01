@@ -113,11 +113,11 @@ media_player:
     name: Fire
 
 #Caravan Monitor
-panel_iframe:
-  caravan:
-    title: 'Caravan'
-    icon: 'mdi:caravan'
-    url: !secret caravan
+#panel_iframe:
+  #caravan:
+    #title: 'Caravan'
+    #icon: 'mdi:caravan'
+    #url: !secret caravan
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
