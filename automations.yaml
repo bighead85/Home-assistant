@@ -158,3 +158,26 @@
         data:
            option: None
 ##########Alexa Alarms
+
+
+##Forecast Names
+
+  - id: update_friendly_names
+    alias: "Update friendly names"
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.fforecast_1
+          - sensor.fforecast_2
+          - sensor.fforecast_3
+          - sensor.fforecast_4
+          - sensor.cforecast_1
+          - sensor.cforecast_2
+          - sensor.cforecast_3
+          - sensor.cforecast_4
+      - platform: homeassistant
+        event: start
+    action:
+      - service: python_script.forecast_names
+        data_template:
+          entityid: '{{trigger.entity_id}}'

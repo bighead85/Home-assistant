@@ -34,6 +34,8 @@
       - sensor.outside_temperature
       - group.current_group
       - group.forecast_group
+      - group.caravan_group
+      - group.caravan_forecast_group
 
   monitor_view:
     name: Smart Monitor
@@ -165,7 +167,7 @@
       - input_select.hass_theme
 
   current_group:
-    name: Current Conditions
+    name: Flat Current Conditions
     entities:
       - sensor.inside_temp
       - sensor.outside_temperature
@@ -173,8 +175,65 @@
       - camera.current_image
 
   forecast_group:
-    name: "Today's Forecast"
+    name: "Flat Forecast"
+    entities:
+      - sensor.fforecast_today
+      - sensor.fforecast_1
+      - sensor.fforecast_2
+      - sensor.fforecast_3
+      - sensor.fforecast_4
+
+  caravan_group:
+    name: Caravan Conditions
+    entities:
+      - sensor.caravan_temp
+      - sensor.caravan_outside_temperature
+      - sensor.caravan_outside_current
+
+  caravan_forecast_group:
+    name: Caravan Forecast
+    entities:
+      - sensor.cforecast_today
+      - sensor.cforecast_1
+      - sensor.cforecast_2
+      - sensor.cforecast_3
+      - sensor.cforecast_4
+
+  hidden_flat_sensors:
+    name: hidden caravan hidden
     entities:
       - sensor.outside_condition
       - sensor.outside_temperature_max
       - sensor.outside_temperature_min
+      - sensor.flat_day1_condition
+      - sensor.flat_day1_temperature_max
+      - sensor.flat_day1_temperature_min
+      - sensor.flat_day2_condition
+      - sensor.flat_day2_temperature_max
+      - sensor.flat_day2_temperature_min
+      - sensor.flat_day3_condition
+      - sensor.flat_day3_temperature_max
+      - sensor.flat_day3_temperature_min
+      - sensor.flat_day4_condition
+      - sensor.flat_day4_temperature_max
+      - sensor.flat_day4_temperature_min
+      - sensor.weekday
+  hidden_caravan_sensors:
+    name: hidden caravan hidden
+    entities:
+      - sensor.caravan_outside_condition
+      - sensor.caravan_outside_temperature_max
+      - sensor.caravan_outside_temperature_min
+      - sensor.caravan_day1_condition
+      - sensor.caravan_day1_temperature_max
+      - sensor.caravan_day1_temperature_min
+      - sensor.caravan_day2_condition
+      - sensor.caravan_day2_temperature_max
+      - sensor.caravan_day2_temperature_min
+      - sensor.caravan_day3_condition
+      - sensor.caravan_day3_temperature_max
+      - sensor.caravan_day3_temperature_min
+      - sensor.caravan_day4_condition
+      - sensor.caravan_day4_temperature_max
+      - sensor.caravan_day4_temperature_min
+      - sensor.weekday

@@ -22,7 +22,8 @@ frontend:
   themes: !include_dir_merge_named themes/
 # Enables configuration UI
 config:
-
+#Allow Python Scripts is python_scripts sub directory
+python_script:
 #Theme front page by user select
 input_select:
   hass_theme:
@@ -199,12 +200,166 @@ sensor:
       - temp_max
       - weather_current
       - temperature
+    scan_interval: 600
+    #Flat Forecast
+  - platform: yweather
+    woeid: !secret weather
+    forecast: 1
+    name: flat_day1
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret weather
+    forecast: 2
+    name: flat_day2
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret weather
+    forecast: 3
+    name: flat_day3
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret weather
+    forecast: 4
+    name: flat_day4
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+
+    # Weather prediction
+  - platform: yweather
+    woeid: !secret caravan_w
+    name: Caravan Outside
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+      - weather_current
+      - temperature
+    scan_interval: 600
+    #Caravan Forecast
+  - platform: yweather
+    woeid: !secret caravan_w
+    forecast: 1
+    name: caravan_day1
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret caravan_w
+    forecast: 2
+    name: caravan_day2
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret caravan_w
+    forecast: 3
+    name: caravan_day3
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+  - platform: yweather
+    woeid: !secret caravan_w
+    forecast: 4
+    name: caravan_day4
+    monitored_conditions:
+      - weather
+      - temp_min
+      - temp_max
+    scan_interval: 10800
+##Template to display forecast in single Card
+  - platform: template
+    sensors:
+      weekday:
+        friendly_name: 'Weekday'
+        value_template: '{{ now().strftime("%A") }}'
+      fforecast_today:
+        friendly_name: "Today"
+        value_template: >
+          {{states.sensor.outside_condition.state}} - Min {{states.sensor.outside_temperature_min.state|round(0)}}°C / Max {{states.sensor.outside_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.outside_condition.attributes.entity_picture}}
+      fforecast_1:
+        value_template: >
+          {{states.sensor.flat_day1_condition.state}} - Min {{states.sensor.flat_day1_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day1_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.flat_day1_condition.attributes.entity_picture}}
+      fforecast_2:
+        value_template: >
+          {{states.sensor.flat_day2_condition.state}} - Min {{states.sensor.flat_day2_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day2_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.flat_day2_condition.attributes.entity_picture}}
+      fforecast_3:
+        value_template: >
+          {{states.sensor.flat_day3_condition.state}} - Min {{states.sensor.flat_day3_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day3_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.flat_day3_condition.attributes.entity_picture}}
+      fforecast_4:
+        value_template: >
+          {{states.sensor.flat_day4_condition.state}} - Min {{states.sensor.flat_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day4_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.flat_day4_condition.attributes.entity_picture}}
+
+      cforecast_today:
+        friendly_name: "Today"
+        value_template: >
+          {{states.sensor.caravan_outside_condition.state}} - Min {{states.sensor.caravan_outside_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_outside_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.caravan_outside_condition.attributes.entity_picture}}
+      cforecast_1:
+        value_template: >
+          {{states.sensor.caravan_day1_condition.state}} - Min {{states.sensor.caravan_day1_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day1_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.caravan_day1_condition.attributes.entity_picture}}
+      cforecast_2:
+        value_template: >
+          {{states.sensor.caravan_day2_condition.state}} - Min {{states.sensor.caravan_day2_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day2_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.caravan_day2_condition.attributes.entity_picture}}
+      cforecast_3:
+        value_template: >
+          {{states.sensor.caravan_day3_condition.state}} - Min {{states.sensor.caravan_day3_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day3_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.caravan_day3_condition.attributes.entity_picture}}
+      cforecast_4:
+        value_template: >
+          {{states.sensor.caravan_day4_condition.state}} - Min {{states.sensor.caravan_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day4_temperature_max.state|round(0)}}°C
+        entity_picture_template: >
+          {{states.sensor.caravan_day4_condition.attributes.entity_picture}}
+
     #Inside Temp
   - platform: command_line
     name: Inside Temp
     command: /usr/bin/php -r 'echo round(shell_exec("/usr/local/bin/temper-poll -c"))+3;'
     unit_of_measurement: "°C"
     scan_interval: 600
+    #Carvan Temp
+  - platform: command_line
+    name: Caravan Temp
+    command: "/bin/bash /home/homeassistant/.homeassistant/caravan_sensor.sh"
+    unit_of_measurement: "°C"
+    scan_interval: 600
+
     #Plex Server
   - platform: plex
     host: 192.168.137.1
@@ -242,7 +397,7 @@ tts:
 notify:
   - name: pushbullet
     platform: pushbullet
-    api_key: o.oRhxoZGb7gmdtgGHkJzJIZjPL3ajM9Vv
+    api_key: !secret push
 
 
 
