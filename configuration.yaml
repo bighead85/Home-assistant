@@ -113,11 +113,11 @@ media_player:
     name: Fire
 
 #Caravan Monitor
-#panel_iframe:
-  #caravan:
-    #title: 'Caravan'
-    #icon: 'mdi:caravan'
-    #url: !secret caravan
+# panel_iframe:
+#   caravan:
+#     title: 'Caravan'
+#     icon: 'mdi:caravan'
+#     url: !secret caravan
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -173,11 +173,31 @@ alexa:
         Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} plex viewers.
         {% for attr in states.sensor.plex_server.attributes %}
          {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" -%}
-          {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}}
+          {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}} .
          {%- endif %}
         {%- endfor -%}
+        {% set cold_temperature = [
+                "Don't forget a jacket, it's cold outside",
+                "It's cold today" ] %}
+        {% set perfect_temperature = [
+                "Looks like a great temperature",
+                "You may need a light jacket maybe, but it looks warm enough"] %}
+        {% set hot_temperature = [
+                "Wow it is hot outside",
+                "Try not to get sunburned",
+                "I hope you know someone with a swimming pool" ] %}
+
+        {% if (states.sensor.outside_temperature.state | int) <= 13 %}
+                {% set weather_greeting = cold_temperature | random %}
+        {% elif 13 < (states.sensor.outside_temperature.state | int) <= 25 %}
+                {% set weather_greeting = perfect_temperature | random %}
+        {% elif (states.sensor.outside_temperature.state | int) > 25 %}
+                {% set weather_greeting = hot_temperature | random %}
+        {% endif %}
+        {{ weather_greeting }} at {{states.sensor.outside_temperature.state}} degrees, {{states.sensor.outside_condition.state}}.
+
     tempread:
-      title: Flat Temperaute
+      title: Flat Temperature
       text: Currently the flat is at {{ states("sensor.inside_temp") }} degrees
     plexread:
      title: Plex users equals {{ states("sensor.plex_server") }}
@@ -187,8 +207,52 @@ alexa:
           {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}}
          {%- endif %}
         {%- endfor -%}
-
-
+    devicesstatus:
+     title: Home Assistant Status
+     text: >
+        {% if (states.group.all_lights.state) == "on"  %}
+        The following lights are currently on:
+            {% if (states.light.dining_main.state) == "on" %}
+                    Dining Main,
+            {% endif %}
+            {% if (states.light.sofa_main.state) == "on" %}
+                    Sofa Main,
+            {% endif %}
+            {% if (states.light.sofa_lamp.state) == "on" %}
+                    Sofa Lamp,
+            {% endif %}
+            {% if (states.light.desk_lamp.state) == "on" %}
+                    Desk Lamp,
+            {% endif %}
+            {% if (states.light.olivia_main.state) == "on" %}
+                    Olivia Main,
+            {% endif %}
+            {% if (states.light.olivia_lamp.state) == "on" %}
+                    Olivia Lamp,
+            {% endif %}
+            {% if (states.group.bed_group.state) == "on" %}
+                    Bedroom Lights,
+            {% endif %}
+        {% else %}
+        All lights Turned off.
+        {% endif %}
+        {% if (states.group.all_switches.state) == "on"  %}
+        The following switches are currently on:
+            {% if (states.switch.desk.state) == "on" %}
+                    Desk,
+            {% endif %}
+            {% if (states.switch.bookcase.state) == "on" %}
+                    Bookcase Lights,
+            {% endif %}
+            {% if (states.switch.coffee.state) == "on" %}
+                    Coffee Machine,
+            {% endif %}
+            {% if (states.switch.echo.state) == "on" %}
+                    Living Room Echo,
+            {% endif %}
+        {% else %}
+        All Switches Turned off.
+        {% endif %}
 sensor:
     # Weather prediction
   - platform: yweather
@@ -359,6 +423,7 @@ sensor:
     command: "/bin/bash /home/homeassistant/.homeassistant/caravan_sensor.sh"
     unit_of_measurement: "°C"
     scan_interval: 600
+
 
     #Plex Server
   - platform: plex
