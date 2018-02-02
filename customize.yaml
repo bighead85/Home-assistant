@@ -101,7 +101,7 @@ scene.bedroom_bedtime:
 scene.lounge_normal:
   emulated_hue: true
   icon: mdi:brightness-auto
-scene.lounge_focus:
+scene.lounge_bright:
   emulated_hue: true
   icon: mdi:brightness-5
 scene.lounge_relax:

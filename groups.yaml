@@ -71,7 +71,7 @@
       - scene.sofa_relax
       - light.dining_main
       - light.desk_lamp
-      - scene.lounge_focus
+      - scene.lounge_bright
       - switch.echo
       - switch.desk
       - scene.work
