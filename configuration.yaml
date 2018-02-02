@@ -178,12 +178,14 @@ alexa:
         {%- endfor -%}
         {% set cold_temperature = [
                 "Don't forget a jacket, it's cold outside",
-                "It's cold today" ] %}
+                "It's cold today",
+                "Not great outside" ] %}
         {% set perfect_temperature = [
-                "Looks like a great temperature",
+                "Pretty average day",
+                "So, so outside",
                 "You may need a light jacket maybe, but it looks warm enough"] %}
         {% set hot_temperature = [
-                "Wow it is hot outside",
+                "Awesome it is hot outside",
                 "Try not to get sunburned",
                 "I hope you know someone with a swimming pool" ] %}
 
@@ -253,6 +255,10 @@ alexa:
         {% else %}
         All Switches Turned off.
         {% endif %}
+        {% if (states.updater.updater.state) %}
+         Home Assistant  {{ states.updater.updater.state }}  is now available.
+        {% endif %}
+
 sensor:
     # Weather prediction
   - platform: yweather
