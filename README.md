@@ -11,3 +11,5 @@ Home assistant on Raspberry Pi 3
 * remote GPIO Temperature sensor
 * Weather Forecasts from Yahoo
 * Alexa Flash Briefings
+* Spotify Player
+* Floorplan
