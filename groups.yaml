@@ -54,6 +54,7 @@
       - sensor.liv_lamp_remote
       - sensor.inside_temp
       - sensor.outside_temperature
+      - group.spot_group
       - group.devices_group
       - group.lights_group
       - group.switches_group
@@ -121,7 +122,13 @@
       - group.bed_group
       - light.olivia_main
       - light.olivia_lamp
-
+  lamps_group:
+    name: Lamps
+    entities:
+      - light.sofa_lamp
+      - light.desk_lamp
+      - group.bed_group
+      - light.olivia_lamp
   switches_group:
     name: Switches
     entities:
@@ -165,7 +172,10 @@
     name: Select theme
     entities:
       - input_select.hass_theme
-
+  spot_group:
+    name: 'Spotify'
+    entities:
+      - input_text.dummy_spot
   current_group:
     name: Flat Current Conditions
     entities:
@@ -237,3 +247,7 @@
       - sensor.caravan_day4_temperature_max
       - sensor.caravan_day4_temperature_min
       - sensor.weekday
+  zones:
+    name: Zones
+    entities:
+      - binary_sensor.floorplan

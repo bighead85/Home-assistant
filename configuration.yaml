@@ -20,6 +20,12 @@ homeassistant:
 frontend:
   javascript_version: latest
   themes: !include_dir_merge_named themes/
+  # extra_html_url:
+  #   - /local/custom_ui/state-card-floorplan.html
+  # extra_html_url_es5:
+  #   - /local/custom_ui/state-card-floorplan.html
+  extra_html_url:
+     - /local/custom_ui/state-card-mini-media-player.html
 # Enables configuration UI
 config:
 #Allow Python Scripts is python_scripts sub directory
@@ -50,6 +56,14 @@ input_boolean:
     name: Alexa Alarm
     initial: off
     icon: mdi:run
+  away_mode:
+    name: Away Mode
+    initial: off
+    icon: mdi:beach
+
+input_text:
+  dummy_spot:
+    name: Spotify
 
 http:
   # Secrets are defined in the file secrets.yaml
@@ -94,6 +108,13 @@ media_player:
     password: !secret bedpwd
     host: 192.168.137.12
     name: bedroom
+  #Olivia Kodi
+  - platform: kodi
+    port: 1025
+    username: !secret bedusr
+    password: !secret bedpwd
+    host: 192.168.137.63
+    name: olivia
   #Alexa Stick Kodi (TV)
   - platform: kodi
     port: 1025
@@ -111,14 +132,24 @@ media_player:
   #Alexa Stick All (TV)
   - platform: firetv
     name: Fire
-
+  #ChromeCast
+  - platform: cast
+  #Spotify
+  - platform: spotify
+    client_id: !secret spot_id
+    client_secret: !secret spot_pwd
 #Caravan Monitor
 # panel_iframe:
 #   caravan:
 #     title: 'Caravan'
 #     icon: 'mdi:caravan'
 #     url: !secret caravan
-
+panel_custom:
+  - name: floorplan
+    sidebar_title: Floorplan
+    sidebar_icon: mdi:home
+    url_path: floorplan
+    config: !include floorplan.yaml
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
@@ -138,26 +169,26 @@ switch:
   switches:
     coffee:
       friendly_name: Coffee Machine
-      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=1#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=1#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
       command_state: '/usr/bin/test -e /var/www/html/son1.lock && echo 0 || echo 1'
       value_template: '{{ value == "0" }}'
     echo:
       friendly_name: Amazon Echo
-      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=2#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=2#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
       command_state: '/usr/bin/test -e /var/www/html/son2.lock && echo 0 || echo 1'
       value_template: '{{ value == "0" }}'
     desk:
       friendly_name: Desk
-      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=3#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=3#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
       command_state: '/usr/bin/test -e /var/www/html/son3.lock && echo 0 || echo 1'
       value_template: '{{ value == "0" }}'
     bookcase:
       friendly_name: Bookcase
-      command_on: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=4#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1/hub.php -d "action=status&id=4#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
       command_state: '/usr/bin/test -e /var/www/html/son4.lock && echo 0 || echo 1'
       value_template: '{{ value == "0" }}'
 
@@ -448,6 +479,7 @@ camera:
 #Fake buttons for Alexa config
 emulated_hue:
   host_ip: 192.168.137.12
+  listen_port: 80
   off_maps_to_on_domains:
     - script
   expose_by_default: false
@@ -471,6 +503,10 @@ notify:
     api_key: !secret push
 
 
+# binary_sensor:
+#   - platform: command_line
+#     command: uptime
+#     name: Floorplan
 
 
 group: !include groups.yaml
