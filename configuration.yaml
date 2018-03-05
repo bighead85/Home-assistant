@@ -150,6 +150,12 @@ panel_custom:
     sidebar_icon: mdi:home
     url_path: floorplan
     config: !include floorplan.yaml
+
+  - name: mirror
+    sidebar_title: Mirror
+    sidebar_icon: mdi:monitor
+    url_path: mirror
+    config: !include mirror.yaml
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
 
@@ -161,7 +167,9 @@ history:
 
 # Enables a map showing the location of tracked devices
 #map:
-
+google:
+  client_id: !secret goo_id
+  client_secret: !secret goo_sec
 
 switch:
   #Energenie Switches
@@ -289,6 +297,9 @@ alexa:
         {% if (states.updater.updater.state) %}
          Home Assistant  {{ states.updater.updater.state }}  is now available.
         {% endif %}
+        {% if (states.sensor.ssl_cert_expiry.state) < "7" %}
+         Home Assistant SSL Renewal required in {{ states.sensor.ssl_cert_expiry.state }} days.
+        {% endif %}
 
 sensor:
     # Weather prediction
@@ -394,6 +405,7 @@ sensor:
       weekday:
         friendly_name: 'Weekday'
         value_template: '{{ now().strftime("%A") }}'
+
       fforecast_today:
         friendly_name: "Today"
         value_template: >
@@ -460,7 +472,17 @@ sensor:
     command: "/bin/bash /home/homeassistant/.homeassistant/caravan_sensor.sh"
     unit_of_measurement: "°C"
     scan_interval: 600
-
+    ##SSL Cert Expiry
+  - platform: command_line
+    name: SSL cert expiry
+    unit_of_measurement: days
+    scan_interval: 86400
+    command: ssl-cert-check -b -c /etc/letsencrypt/live/bighead85.duckdns.org/cert.pem | awk '{ print $NF }'
+    ##Date/Time
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
 
     #Plex Server
   - platform: plex
@@ -475,7 +497,9 @@ camera:
   - platform: local_file
     name: Current Image
     file_path: /var/www/html/images/camera.jpg
-
+  # - platform: generic
+  #   name: Traffic
+  #   still_image_url: https://www.google.com/maps/@51.0025985,-3.2068304,13z/data=!5m1!1e1?hl=en-GB
 #Fake buttons for Alexa config
 emulated_hue:
   host_ip: 192.168.137.12
@@ -507,6 +531,16 @@ notify:
 #   - platform: command_line
 #     command: uptime
 #     name: Floorplan
+# Example configuration.yaml entry
+# rss_feed_template:
+#   # Example: https://localhost:8123/api/rss_template/spotify
+#   spotify:
+#     requires_api_password: False
+#     title: "Now Playing"
+#     items:
+#     - title: {{states.media_player.spotify.media_title}} - {{states.media_player.spotify.media_artist}}
+#       description: "{% if {{states.media_player.spotify.playing}} %}---{% else %} Nothing Playing {% endif %}"
+#
 
 
 group: !include groups.yaml
