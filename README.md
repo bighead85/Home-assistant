@@ -12,4 +12,5 @@ Home assistant on Raspberry Pi 3
 * Weather Forecasts from Yahoo
 * Alexa Flash Briefings
 * Spotify Player
-* Floorplan
+* Floorplan panel
+* Magic Mirror panel
