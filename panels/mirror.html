@@ -1,45 +1,74 @@
-<dom-module id='ha-panel-mirror'>
+<link rel="import" href="/local/custom_ui/mirror/mirror.html" async>
+
+<dom-module id="ha-panel-mirror"> 
+
   <template>
-    <style>
-      p {
-        font-weight: bold;
+    <style include="ha-style">
+      .container-fullscreen {
+        height: calc(100%);
+        vertical-align: top;
+        position: relative;
+      }
+
+      .container-with-toolbar {
+        height: calc(100% - 64px);
+        vertical-align: top;
+        position: relative;
+      }
+
+      [hidden] {
+        display: none !important;
       }
     </style>
-    <p>Hello {{who}}. Greetings from Home Assistant.</p>
+
+    <app-toolbar hidden$='{{!showAppToolbar}}'>
+      <ha-menu-button narrow='[[narrow]]' show-menu='[[showMenu]]'></ha-menu-button>
+      <div main-title>[[panel.title]]</div>
+    </app-toolbar>
+
+    <div class$='[[containerClass]]'>
+      <ha-floorplan hass=[[hass]] config=[[panel.config]] is-panel></ha-floorplan>
+    </div>
   </template>
+
 </dom-module>
 
 <script>
-class HaPanelMirror extends Polymer.Element {
-  static get is() { return 'ha-panel-mirror'; }
+  Polymer({
+    is: 'ha-panel-mirror',
 
-  static get properties() {
-    return {
-      // Home Assistant object
-      hass: Object,
-      // If should render in narrow mode
+    properties: {
+      hass: {
+        type: Object,
+      },
       narrow: {
         type: Boolean,
         value: false,
       },
-      // If sidebar is currently shown
       showMenu: {
         type: Boolean,
         value: false,
       },
-      // Home Assistant panel info
-      // panel.config contains config passed to register_panel serverside
-      panel: Object,
-      who: {
-        type: String,
-        computed: 'computeWho(panel)',
+      showAppToolbar: {
+        type: Boolean,
+        value: false,
       },
-    };
-  }
+      panel: {
+        type: Object,
+        observer: 'panelChanged',
+      },
+      containerClass: {
+        type: String,
+        value: 'container-fullscreen',
+      }
+    },
 
-  computeWho(panel) {
-    return panel && panel.config && panel.config.who ? panel.config.who : 'World';
-  }
-}
-customElements.define(HaPanelMirror.is, HaPanelMirror);
+    panelChanged: function() {
+      var hideAppToolbar = ((this.panel.config.hide_app_toolbar === null) || (this.panel.config.hide_app_toolbar !== undefined));
+      this.showAppToolbar = !hideAppToolbar;
+      this.containerClass = this.showAppToolbar ? 'container-with-toolbar' : 'container-fullscreen';
+    },
+
+  });
+
 </script>

@@ -138,6 +138,7 @@ media_player:
   - platform: spotify
     client_id: !secret spot_id
     client_secret: !secret spot_pwd
+
 #Caravan Monitor
 # panel_iframe:
 #   caravan:
@@ -399,13 +400,15 @@ sensor:
       - temp_min
       - temp_max
     scan_interval: 10800
-##Template to display forecast in single Card
+
+  ##Templates
   - platform: template
     sensors:
+      ##Template to display forecast in single Card
       weekday:
         friendly_name: 'Weekday'
         value_template: '{{ now().strftime("%A") }}'
-
+      ##Flat 
       fforecast_today:
         friendly_name: "Today"
         value_template: >
@@ -432,7 +435,7 @@ sensor:
           {{states.sensor.flat_day4_condition.state}} - Min {{states.sensor.flat_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day4_temperature_max.state|round(0)}}°C
         entity_picture_template: >
           {{states.sensor.flat_day4_condition.attributes.entity_picture}}
-
+      ##Caravan
       cforecast_today:
         friendly_name: "Today"
         value_template: >
@@ -459,6 +462,39 @@ sensor:
           {{states.sensor.caravan_day4_condition.state}} - Min {{states.sensor.caravan_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day4_temperature_max.state|round(0)}}°C
         entity_picture_template: >
           {{states.sensor.caravan_day4_condition.attributes.entity_picture}}
+      ##Date in word format
+      date_long:
+        value_template: >
+          {% set months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] %}
+          {% set month = months[now().strftime('%m') | int -1] %}
+          {% set day = ["Monday ", "Tuesday ", "Wednesday ", "Thursday ", "Friday ", "Saturday ", "Sunday "] %}
+          {% set day = day[now().strftime('%A') | int -1] %}
+          {{ day + now().strftime('%d') + ' ' + month + ' ' }}
+      ##Spotify Now playing
+      spotify_title:
+        value_template: >
+          {% if is_state("media_player.spotify", "playing")%}
+            {{states.media_player.spotify.attributes.media_title}}
+          {% else %}
+
+          {% endif %}
+        friendly_name: "Spotify Title"
+      spotify_artist:
+        value_template: >
+          {% if is_state("media_player.spotify", "playing")%}
+            Artist: {{states.media_player.spotify.attributes.media_artist}}
+          {% else %}
+
+          {% endif %}
+        friendly_name: "Spotify Artist"
+      spotify_source:
+        value_template: >
+          {% if is_state("media_player.spotify", "playing")%}
+            Playing on: {{states.media_player.spotify.attributes.source}}
+          {% else %}
+
+          {% endif %}
+        friendly_name: "Spotify Source"
 
     #Inside Temp
   - platform: command_line

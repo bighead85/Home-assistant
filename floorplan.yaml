@@ -17,7 +17,7 @@
               class: 'light-off'
          # action:
          #      domain: light   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-         #      service: toggle
+         #      service: toggle 
 #Lamps
        - name: Lamps
          entities:

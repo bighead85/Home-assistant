@@ -1,94 +1,33 @@
-       name: Magic Mirror
-#       image: /local/custom_ui/floorplan/floorplan.svg
-#       stylesheet: /local/custom_ui/floorplan/floorplan.css
-#       warnings:
-#
-#       groups:
-# #Lights
-#        - name: Lights
-#          entities:
-#              - light.sofa_main
-#              - light.dining_main
-#              - light.olivia_main
-#          states:
-#             - state: 'on'
-#               class: 'light-on'
-#             - state: 'off'
-#               class: 'light-off'
-#          # action:
-#          #      domain: light   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-#          #      service: toggle
-# #Lamps
-#        - name: Lamps
-#          entities:
-#              - light.sofa_lamp
-#              - light.desk_lamp
-#              - light.olivia_lamp
-#              - light.left
-#              - light.right
-#          states:
-#             - state: 'on'
-#               class: 'light-on'
-#             - state: 'off'
-#               class: 'light-off'
-#          action:
-#               domain: light   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-#               service: toggle
-# #Switches
-#        - name: Switches
-#          entities:
-#              - switch.coffee
-#              - switch.bookcase
-#              - switch.desk
-#              - switch.echo
-#          states:
-#             - state: 'on'
-#               class: 'switch-on'
-#             - state: 'off'
-#               class: 'switch-off'
-#          action:
-#               domain: switch   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-#               service: toggle
-# #Scenes
-#        - name: Scenes
-#          entities:
-#              - scene.all_off
-#              - scene.daddys_home
-#              - scene.bedroom_bedtime
-#              - scene.olivia_room_bedtime
-#          action:
-#               domain: homeassistant  # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-#               service: turn_on
-#
-# #Sensors
-#        - name: Sensors
-#          entities:
-#              - sensor.inside_temp
-#              - sensor.outside_temperature
-#          text_template: '${entity.state ? Math.ceil(entity.state) : "undefined"}°C'
-#          class_template: '
-#             var temp = parseFloat(entity.state.replace("°", "°C"));
-#             if (temp < 15)
-#               return "temp-low";
-#             else if (temp < 21)
-#               return "temp-medium";
-#             else
-#               return "temp-high";
-#             '
-#
-# #Media Players
-#        - name: Media Players
-#          entities:
-#            - media_player.fire
-#            - media_player.bedroom
-#            - media_player.olivia
-#            - media_player.tv_2
-#          states:
-#            - state: 'off'
-#              class: 'mediaplayer-off'
-#            - state: 'idle'
-#              class: 'mediaplayer-off'
-#            - state: 'paused'
-#              class: 'mediaplayer-off'
-#            - state: 'playing'
-#              class: 'mediaplayer-on'
+      name: Magic Mirror
+      image: /local/custom_ui/mirror/mirror.svg
+      stylesheet: /local/custom_ui/mirror/mirror.css
+      hide_app_toolbar: #comment for testing
+#      warnings: #Uncomment for debug
+      groups:
+
+#Sensors 
+       - name: temp_Sensors
+         entities:
+             - sensor.inside_temp
+             - sensor.outside_temperature
+             - sensor.outside_temperature_max
+             - sensor.outside_temperature_min
+             - sensor.flat_day1_temperature_max
+             - sensor.flat_day1_temperature_min
+         text_template: '${entity.state ? Math.ceil(entity.state) : "undefined"}°C'
+
+       - name: Time_sensors
+         entities:
+           - sensor.time
+           - sensor.date_long
+
+       - name: weather_sensors
+         entities:
+           - sensor.outside_condition
+           - sensor.flat_day1_condition
+
+       - name: spotify_sensors
+         entities:
+           - sensor.spotify_title
+           - sensor.spotify_artist
+           - sensor.spotify_source
