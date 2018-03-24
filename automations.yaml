@@ -6,7 +6,7 @@
       - service: notify.pushbullet
         data_template:
           title: 'New Home Assistant Release'
-          target: 'email/mpatterson190285@gmail.com' #See Pushbullet component for usage
+          target: 'email/EMAIL' #See Pushbullet component for usage
           message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
   #IF user changes Theme
   - alias: hass_theme
