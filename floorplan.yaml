@@ -1,4 +1,4 @@
-      name: Demo Floorplan
+      name: Floorplan
       image: /local/custom_ui/floorplan/floorplan.svg
       stylesheet: /local/custom_ui/floorplan/floorplan.css
       warnings:
@@ -17,7 +17,7 @@
               class: 'light-off'
          # action:
          #      domain: light   # This optional parameter allows you to use other services such as homeassistant.toggle like here.
-         #      service: toggle 
+         #      service: toggle
 #Lamps
        - name: Lamps
          entities:
@@ -37,10 +37,10 @@
 #Switches
        - name: Switches
          entities:
-             - switch.coffee
-             - switch.bookcase
-             - switch.desk
-             - switch.echo
+             - switch.one
+             - switch.four
+             - switch.5616264384f3eb22e5c6
+             - switch.two
          states:
             - state: 'on'
               class: 'switch-on'
@@ -64,7 +64,7 @@
        - name: Sensors
          entities:
              - sensor.inside_temp
-             - sensor.outside_temperature
+             - sensor.dark_sky_temperature
          text_template: '${entity.state ? Math.ceil(entity.state) : "undefined"}°C'
          class_template: '
             var temp = parseFloat(entity.state.replace("°", "°C"));

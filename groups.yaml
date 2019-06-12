@@ -34,8 +34,14 @@
       - sensor.outside_temperature
       - group.current_group
       - group.forecast_group
-      - group.caravan_group
-      - group.caravan_forecast_group
+
+  calendar_view:
+    name: Calendar
+    view: yes
+    icon: mdi:calendar-clock
+    entities:
+      - group.my_event_group
+      - group.contacts_event_group
 
   monitor_view:
     name: Smart Monitor
@@ -46,7 +52,7 @@
       - device_tracker.amazone6c04a152
       - device_tracker.302060046
       - device_tracker.mpxub
-      - device_tracker.mac
+      - device_tracker.imac
       - sensor.lounge_main_remote
       - sensor.left_remote
       - sensor.right_remote
@@ -54,6 +60,7 @@
       - sensor.liv_lamp_remote
       - sensor.inside_temp
       - sensor.outside_temperature
+      - sensor.ssl_cert_expiry
       - group.spot_group
       - group.devices_group
       - group.lights_group
@@ -73,8 +80,8 @@
       - light.dining_main
       - light.desk_lamp
       - scene.lounge_bright
-      - switch.echo
-      - switch.desk
+      - switch.two
+      - switch.5616264384f3eb22e5c6
       - scene.work
       - media_player.tv
 
@@ -84,7 +91,7 @@
       - scene.bedroom_bedtime
       - group.bed_group
       - scene.bedroom_bright
-      - switch.bookcase
+      - switch.four
       - media_player.bedroom
 
   liv_bedroom:
@@ -101,16 +108,16 @@
   devices_group:
     name: Smart Home
     entities:
-      - switch.coffee
+      - switch.two
       - sensor.plex_server
       - device_tracker.utvpc
       - script.update_library
       - device_tracker.alexastick
       - device_tracker.smarthub
-      - device_tracker.gwa0cc2b6d71bb
-      - device_tracker.amazon58ab7f748
-      - device_tracker.amazon50bb2db8b
-      - device_tracker.amazon99283b81a
+      - device_tracker.tradfri
+      - device_tracker.livingroomecho
+      - device_tracker.bedroomdot
+      - device_tracker.oliviadot
 
   lights_group:
     name: Lights
@@ -132,16 +139,16 @@
   switches_group:
     name: Switches
     entities:
-      - switch.coffee
-      - switch.echo
-      - switch.desk
-      - switch.bookcase
+      - switch.one
+      - switch.two
+      - switch.5616264384f3eb22e5c6
+      - switch.four
 
   flat_group:
     name: Flat Controls
     entities:
       - script.find_my_phone
-      - switch.coffee
+      - switch.one
       - script.update_library
       - input_select.alarm_zone
 
@@ -193,24 +200,26 @@
       - sensor.fforecast_3
       - sensor.fforecast_4
 
-  caravan_group:
-    name: Caravan Conditions
-    entities:
-      - sensor.caravan_temp
-      - sensor.caravan_outside_temperature
-      - sensor.caravan_outside_current
 
-  caravan_forecast_group:
-    name: Caravan Forecast
+  my_event_group:
+    name: Next Event
     entities:
-      - sensor.cforecast_today
-      - sensor.cforecast_1
-      - sensor.cforecast_2
-      - sensor.cforecast_3
-      - sensor.cforecast_4
+      - sensor.my_event_title
+      - sensor.my_event_time
+      - sensor.my_event_description
+      - sensor.my_event_location
+      - sensor.holiday_event_title
+
+  contacts_event_group:
+    name: Contacts Next Event
+    entities:
+      - sensor.contacts_event_title
+      - sensor.contacts_event_time
+      - sensor.contacts_event_description
+      - sensor.contacts_event_location
 
   hidden_flat_sensors:
-    name: hidden caravan hidden
+    name: hidden flat hidden
     entities:
       - sensor.outside_condition
       - sensor.outside_temperature_max
@@ -228,25 +237,7 @@
       - sensor.flat_day4_temperature_max
       - sensor.flat_day4_temperature_min
       - sensor.weekday
-  hidden_caravan_sensors:
-    name: hidden caravan hidden
-    entities:
-      - sensor.caravan_outside_condition
-      - sensor.caravan_outside_temperature_max
-      - sensor.caravan_outside_temperature_min
-      - sensor.caravan_day1_condition
-      - sensor.caravan_day1_temperature_max
-      - sensor.caravan_day1_temperature_min
-      - sensor.caravan_day2_condition
-      - sensor.caravan_day2_temperature_max
-      - sensor.caravan_day2_temperature_min
-      - sensor.caravan_day3_condition
-      - sensor.caravan_day3_temperature_max
-      - sensor.caravan_day3_temperature_min
-      - sensor.caravan_day4_condition
-      - sensor.caravan_day4_temperature_max
-      - sensor.caravan_day4_temperature_min
-      - sensor.weekday
+
   zones:
     name: Zones
     entities:

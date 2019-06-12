@@ -1,7 +1,7 @@
 <!--
-  Floorplan for Home Assistant
+  Mirror for Home Assistant
   Version: 1.0.13
-  https://github.com/pkozul/ha-floorplan
+  https://github.com/pkozul/ha-mirror
 -->
 
 <script src="lib/jquery-3.2.1.min.js"></script>
@@ -11,7 +11,7 @@
 <!-- As documented here for chrome, removes the need for touchstart -->
 <meta name="viewport" content="width=device-width">
 
-<dom-module id="ha-floorplan">
+<dom-module id="ha-mirror">
 
   <template>
     <style>
@@ -59,7 +59,7 @@
       <ul></ul>
     </div>
 
-    <div id="floorplan" on-tap="stopPropagation"></div>
+    <div id="mirror" on-tap="stopPropagation"></div>
 
   </template>
 
@@ -67,8 +67,8 @@
 
 <script>
 
-  class HaFloorplan extends Polymer.Element {
-    static get is() { return 'ha-floorplan'; }
+  class HaMirror extends Polymer.Element {
+    static get is() { return 'ha-mirror'; }
 
     static get properties() {
       return {
@@ -118,7 +118,7 @@
       super.connectedCallback();
 
       if (!this.isInitialized) {
-        this.initFloorplan();
+        this.initMirror();
       }
     }
 
@@ -130,28 +130,28 @@
       this.handleEntities(newHass.states);
     }
 
-    initFloorplan() {
+    initMirror() {
       this.isInitialized = true;
 
       window.onerror = this.handleWindowError.bind(this);
 
       if (!this.config.groups) {
         this.isLoading = false;
-        this.warn(`Cannot find 'groups' in floorplan configuration`);
+        this.warn(`Cannot find 'groups' in mirror configuration`);
         return;
       }
 
       let invalidGroups = this.config.groups.filter(x => x.entities && x.elements);
       if (invalidGroups.length) {
         this.isLoading = false;
-        this.warn(`A group cannot contain both 'entities' and 'elements' in floorplan configuration`);
+        this.warn(`A group cannot contain both 'entities' and 'elements' in mirror configuration`);
         return;
       }
 
       invalidGroups = this.config.groups.filter(x => !x.entities && !x.elements);
       if (invalidGroups.length) {
         this.isLoading = false;
-        this.warn(`A group must contain either 'entities' or 'elements' in floorplan configuration`);
+        this.warn(`A group must contain either 'entities' or 'elements' in mirror configuration`);
         return;
       }
 
@@ -166,7 +166,7 @@
       });
 
       this.addExternalCss(() => {
-        this.loadFloorPlan(() => {
+        this.loadMirror(() => {
           this.isLoading = false;
           this.handleEntities(this.hass.states);
         });
@@ -215,7 +215,7 @@
       }.bind({ instance: this, callback: callback }));
     }
 
-    loadFloorPlan(callback) {
+    loadMirror(callback) {
       jQuery.ajax({
         url: this.config.image + '?cacheBuster=' + (new Date().getTime()),
         success: function (result) {
@@ -226,7 +226,7 @@
           $(svg).css('position', this.instance.isPanel ? 'absolute' : 'relative');
           $(svg).css('cursor', 'default');
 
-          this.instance.$.floorplan.appendChild(svg);
+          this.instance.$.mirror.appendChild(svg);
 
           let uniqueId = (new Date()).getTime();
 
@@ -381,7 +381,7 @@
     }
 
     handleEntities(entities) {
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = this.$.mirror.querySelector('svg');
 
       for (let entityId in entities) {
         let entityState = entities[entityId];
@@ -541,7 +541,7 @@
     }
 
     loadImage(imageUrl, entityId, entityState, callback) {
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = this.$.mirror.querySelector('svg');
       jQuery.ajax({
         url: imageUrl, // allow the browser cache to be used
         success: function (result) {
@@ -620,7 +620,7 @@
       if (!this.cssRules || !this.cssRules.length)
         return;
 
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = this.$.mirror.querySelector('svg');
 
       for (let entityId in this.entityConfigs) {
         let entityConfig = this.entityConfigs[entityId];
@@ -719,7 +719,7 @@
 
               switch (action.service) {
                 case 'toggle':
-                  let svg = this.instance.$.floorplan.querySelector('svg');
+                  let svg = this.instance.$.mirror.querySelector('svg');
                   let classes = action.data.classes;
 
                   for (let otherElementId of action.data.elements) {
@@ -971,6 +971,6 @@
       return event;
     }
   }
-  customElements.define(HaFloorplan.is, HaFloorplan);
+  customElements.define(HaMirror.is, HaMirror);
 
 </script>

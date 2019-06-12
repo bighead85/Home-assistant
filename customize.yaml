@@ -39,6 +39,50 @@ light.lounge:
 group.bed_group:
   friendly_name: Bed Lights
   icon: mdi:square
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: 'if (state === ''on'') return ''rgb(253, 216, 53)''; return ''rgb(68,
+      115, 158)'';
+
+      '
+media_player.bedroom_2:
+  icon: mdi:amazon-alexa
+media_player.olivia_2:
+  icon: mdi:amazon-alexa
+media_player.living_room:
+  icon: mdi:amazon-alexa
+media_player.olivia:
+  icon: mdi:desktop-mac
+media_player.bedroom:
+  icon: mdi:television-box
+media_player.fire:
+  icon: mdi:television-box
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: 'if (state == ''playing'') return ''rgb(255,191,0)'';
+
+      '
+media_player.tv:
+  icon: mdi:television-box
+sensor.left_remote:
+  friendly_name: L remote
+  icon: mdi:battery-outline
+sensor.right_remote:
+  friendly_name: R remote
+  icon: mdi:battery-outline
+sensor.liv_main_remote:
+  friendly_name: Liv Main
+  icon: mdi:battery-outline
+sensor.liv_lamp_remote:
+  friendly_name: Liv Lamp
+  icon: mdi:battery-outline
+sensor.lounge_main_remote:
+  friendly_name: Lounge
+  icon: mdi:battery-outline
+sensor.dark_sky_summary_0d:
+  friendly_name: Tomorrow
+sensor.dark_sky_summary:
+  friendly_name: Today
 sensor.plex_server:
   icon: mdi:plex
 sensor.weather_current:
@@ -48,27 +92,53 @@ sensor.weather_temperature:
 sensor.outside_current:
   friendly_name: Weather
 sensor.inside_temp:
-  friendly_name: Temp Inside
-sensor.outside_temperature:
-  friendly_name: Temp Outside
+  friendly_name: Inside
+sensor.dark_sky_temperature:
+  friendly_name: Outside
 sensor.outside_condition:
   friendly_name: Forecast
 sensor.outside_temperature_max:
   friendly_name: Max Temp
 sensor.outside_temperature_min:
   friendly_name: Min Temp
-switch.coffee:
+sensor.my_event_title:
+  icon: mdi:calendar
+sensor.my_event_time:
+  icon: mdi:clock
+sensor.my_event_description:
+  icon: mdi:calendar-text
+sensor.my_event_location:
+  icon: mdi:map-marker
+sensor.holiday_event_title:
+  icon: mdi:calendar-clock
+sensor.contacts_event_title:
+  icon: mdi:calendar
+sensor.contacts_event_time:
+  icon: mdi:clock
+sensor.contacts_event_description:
+  icon: mdi:calendar-text
+sensor.contacts_event_location:
+  icon: mdi:map-marker
+sensor.ssl_cert_expiry:
+  friendly_name: SSL
+  icon: mdi:update
+switch.one:
   icon: mdi:coffee
   emulated_hue_hidden: false
-switch.bookcase:
+switch.four:
   icon: mdi:book-open-variant
   emulated_hue_hidden: false
-switch.echo:
+switch.two:
   icon: mdi:speaker-wireless
   emulated_hue_hidden: false
-switch.desk:
-  icon: mdi:desktop-mac
+switch.three:
+  icon: mdi:amazon-alexa
   emulated_hue_hidden: false
+switch.5616264384f3eb22e5c6:
+  icon: mdi:desktop-mac
+script.restart_osmc:
+  emulated_hue_hidden: false
+  icon: mdi:restart
 script.fire_pause:
   emulated_hue_hidden: false
   icon: mdi:pause-circle
@@ -101,6 +171,9 @@ script.update_library:
 script.find_my_phone:
   icon: mdi:phone-in-talk
   emulated_hue_hidden: false
+script.quiet_my_phone:
+  icon: mdi:phone-in-talk
+  emulated_hue_hidden: false
 scene.bedroom_bright:
   emulated_hue_hidden: false
   icon: mdi:brightness-5
@@ -108,6 +181,24 @@ scene.bedroom_bedtime:
   emulated_hue_hidden: false
   icon: mdi:hotel
 scene.lounge_normal:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.tv_normal:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.tv_blue:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.tv_green:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.tv_pink:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.tv_red:
+  emulated_hue_hidden: false
+  icon: mdi:brightness-auto
+scene.movie_time:
   emulated_hue_hidden: false
   icon: mdi:brightness-auto
 scene.lounge_bright:
@@ -134,16 +225,99 @@ scene.olivia_room_bedtime:
 scene.olivia_room_story_time:
   emulated_hue_hidden: false
   icon: mdi:book-open-variant
+scene.all_off:
+  icon: mdi:home-outline
+scene.daddys_home:
+  icon: mdi:home-variant
+  friendly_name: Welcome Home
 binary_sensor.floorplan:
   custom_ui_state_card: state-card-floorplan
-  config: !include floorplan.yaml
+  config:
+    name: Floorplan
+    image: /local/custom_ui/floorplan/floorplan.svg
+    stylesheet: /local/custom_ui/floorplan/floorplan.css
+    warnings:
+    groups:
+    - name: Lights
+      entities:
+      - light.sofa_main
+      - light.dining_main
+      - light.olivia_main
+      states:
+      - state: 'on'
+        class: light-on
+      - state: 'off'
+        class: light-off
+    - name: Lamps
+      entities:
+      - light.sofa_lamp
+      - light.desk_lamp
+      - light.olivia_lamp
+      - light.left
+      - light.right
+      states:
+      - state: 'on'
+        class: light-on
+      - state: 'off'
+        class: light-off
+      action:
+        domain: light
+        service: toggle
+    - name: Switches
+      entities:
+      - switch.one
+      - switch.four
+      - switch.three
+      - switch.two
+      states:
+      - state: 'on'
+        class: switch-on
+      - state: 'off'
+        class: switch-off
+      action:
+        domain: switch
+        service: toggle
+    - name: Scenes
+      entities:
+      - scene.all_off
+      - scene.daddys_home
+      - scene.bedroom_bedtime
+      - scene.olivia_room_bedtime
+      action:
+        domain: homeassistant
+        service: turn_on
+    - name: Sensors
+      entities:
+      - sensor.inside_temp
+      - sensor.outside_temperature
+      text_template: '${entity.state ? Math.ceil(entity.state) : "undefined"}°C'
+      class_template: ' var temp = parseFloat(entity.state.replace("°", "°C")); if
+        (temp < 15) return "temp-low"; else if (temp < 21) return "temp-medium"; else
+        return "temp-high"; '
+    - name: Media Players
+      entities:
+      - media_player.fire
+      - media_player.bedroom
+      - media_player.olivia
+      - media_player.tv_2
+      states:
+      - state: 'off'
+        class: mediaplayer-off
+      - state: idle
+        class: mediaplayer-off
+      - state: paused
+        class: mediaplayer-off
+      - state: playing
+        class: mediaplayer-on
 media_player.tv_2:
   friendly_name: Chromecast
-
-#Mini media
 input_text.dummy_spot:
   custom_ui_state_card: state-card-mini-media-player
   icon: mdi:spotify
   config:
     player: media_player.spotify
     compact_view: true
+weather.yweather:
+  friendly_name: Weather
+input_boolean.speed_test:
+  icon: mdi:arrow-split-horizontal

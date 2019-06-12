@@ -1,183 +1,186 @@
-  - alias: Update notifications
-    trigger:
-      - platform: state
-        entity_id: updater.updater
-    action:
-      - service: notify.pushbullet
-        data_template:
-          title: 'New Home Assistant Release'
-          target: 'email/EMAIL' #See Pushbullet component for usage
-          message: "Home Assistant  {{ states.updater.updater.state }}  is now available."
-  #IF user changes Theme
-  - alias: hass_theme
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: input_select.hass_theme
-    action:
-      - service: frontend.set_theme
-        data_template:
-          name: "{{ states.input_select.hass_theme.state }}"
-      - service: input_select.select_option
-        entity_id: input_select.hass_theme
-        data:
-           option: "{{ states.input_select.hass_theme.state }}"
-  #IF sun down change Theme
-  - alias: Automatic Theme Change
-    trigger:
-      - platform: homeassistant
-        event: start
-      - platform: state
-        entity_id: sun.sun
-    action:
-      - service_template: frontend.set_theme
-        data_template:
-          name: >
-            {% if states.sun.sun.state == "above_horizon" %}
-              default
-            {% else %}
-              night
-            {% endif %}
-      - service: input_select.select_option
-        entity_id: input_select.hass_theme
-        data:
-           option: >
-             {% if states.sun.sun.state == "above_horizon" %}
-               default
-             {% else %}
-               night
-             {% endif %}
-
-##########Alexa Alarms
-  - alias: Alexa Alarm - Mark Bedroom
-    trigger:
-      - platform: state
-        entity_id: input_boolean.alexa_alarm
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_select.alarm_zone
-        state: 'Mark Bedroom'
-    action:
-      - service: light.turn_on
-        entity_id: group.bed_group
-        data:
-           brightness: 255
-           transition: 1800
-           kelvin: 2200
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_alarm
-      - service: input_select.select_option
-        entity_id: input_select.alarm_zone
-        data:
-           option: None
-
-  - alias: Alexa Alarm - Olivia Bedroom
-    trigger:
-      - platform: state
-        entity_id: input_boolean.alexa_alarm
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_select.alarm_zone
-        state: 'Olivia Bedroom'
-    action:
-      - service: light.turn_on
-        entity_id: light.olivia_lamp
-        data:
-           brightness: 255
-           transition: 1800
-           kelvin: 2200
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_alarm
-      - service: input_select.select_option
-        entity_id: input_select.alarm_zone
-        data:
-           option: None
-
-  - alias: Alexa Alarm - Lounge
-    trigger:
-      - platform: state
-        entity_id: input_boolean.alexa_alarm
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_select.alarm_zone
-        state: 'Lounge'
-    action:
-      - service: light.turn_on
-        entity_id: [light.sofa_lamp,light.desk_lamp]
-        data:
-           brightness: 255
-           transition: 1800
-           kelvin: 2200
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_alarm
-      - service: input_select.select_option
-        entity_id: input_select.alarm_zone
-        data:
-           option: None
-
-  - alias: Alexa Alarm - All
-    trigger:
-      - platform: state
-        entity_id: input_boolean.alexa_alarm
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_select.alarm_zone
-        state: 'All'
-    action:
-      - service: light.turn_on
-        entity_id: [group.bed_group,light.olivia_lamp,light.lounge_lamps]
-        data:
-           brightness: 255
-           transition: 1800
-           kelvin: 2200
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_alarm
-      - service: input_select.select_option
-        entity_id: input_select.alarm_zone
-        data:
-           option: None
-
-  - alias: Alexa Alarm - Off
-    trigger:
-      - platform: state
-        entity_id: input_boolean.alexa_alarm
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_select.alarm_zone
-        state: 'None'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.alexa_alarm
-      - service: input_select.select_option
-        entity_id: input_select.alarm_zone
-        data:
-           option: None
-##########Alexa Alarms
-
-
-##Forecast Names
-
-  - id: update_friendly_names
-    alias: "Update friendly names"
-    trigger:
-      - platform: state
-        entity_id:
-          - sensor.fforecast_1
-          - sensor.fforecast_2
-          - sensor.fforecast_3
-          - sensor.fforecast_4
-          - sensor.cforecast_1
-          - sensor.cforecast_2
-          - sensor.cforecast_3
-          - sensor.cforecast_4
-      - platform: homeassistant
-        event: start
-    action:
-      - service: python_script.forecast_names
-        data_template:
-          entityid: '{{trigger.entity_id}}'
+- alias: Update notifications
+  trigger:
+  - platform: state
+    entity_id: updater.updater
+  action:
+  - service: notify.pushbullet
+    data_template:
+      title: New Home Assistant Release
+      target: email/mpatterson190285@gmail.com
+      message: Home Assistant  {{ states.updater.updater.state }}  is now available.
+  id: 0ccaa0930a8a4651b273d795309da166
+- alias: Auto Renew SSL Cert
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 29
+  action:
+    service: shell_command.renew_ssl
+  id: 7103163d0a9e4940a6c482a2f53e5e77
+- alias: Auto Renew SSL Cert Notify
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.ssl_cert_expiry
+    below: 20
+  action:
+  - service: notify.pushbullet
+    data_template:
+      title: SSL Needs Renewing
+      target: email/mpatterson190285@gmail.com
+      message: Home Assistant SSL has {{ states.sensor.ssl_cert_expiry.state }}  days
+        left.
+  id: aa19ca8827924bb3858db43d3ee8aa47
+- alias: hass_theme
+  initial_state: 'on'
+  trigger:
+  - platform: state
+    entity_id: input_select.hass_theme
+  action:
+  - service: frontend.set_theme
+    data_template:
+      name: '{{ states.input_select.hass_theme.state }}'
+  - service: input_select.select_option
+    entity_id: input_select.hass_theme
+    data:
+      option: '{{ states.input_select.hass_theme.state }}'
+  id: fcd84291d2f847eb8224973aa0c507a0
+- alias: Automatic Theme Change
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: sun.sun
+  action:
+  - service_template: frontend.set_theme
+    data_template:
+      name: "{% if states.sun.sun.state == \"above_horizon\" %}\n  default\n{% else\
+        \ %}\n  night\n{% endif %}\n"
+  id: 4401468c53e54a3bb94302292e67add7
+- alias: Alexa Alarm - Mark Bedroom
+  trigger:
+  - platform: state
+    entity_id: input_boolean.alexa_alarm
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_select.alarm_zone
+    state: Mark Bedroom
+  action:
+  - service: light.turn_on
+    entity_id: group.bed_group
+    data:
+      brightness: 255
+      transition: 1800
+      kelvin: 2200
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alexa_alarm
+  - service: input_select.select_option
+    entity_id: input_select.alarm_zone
+    data:
+      option: None
+  id: 37d1dca4e33547adbc27f5275443a123
+- alias: Alexa Alarm - Olivia Bedroom
+  trigger:
+  - platform: state
+    entity_id: input_boolean.alexa_alarm
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_select.alarm_zone
+    state: Olivia Bedroom
+  action:
+  - service: light.turn_on
+    entity_id: light.olivia_lamp
+    data:
+      brightness: 255
+      transition: 1800
+      kelvin: 2200
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alexa_alarm
+  - service: input_select.select_option
+    entity_id: input_select.alarm_zone
+    data:
+      option: None
+  id: ebf492d1b2c84640acca4d4db94b64a2
+- alias: Alexa Alarm - Lounge
+  trigger:
+  - platform: state
+    entity_id: input_boolean.alexa_alarm
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_select.alarm_zone
+    state: Lounge
+  action:
+  - service: light.turn_on
+    entity_id:
+    - light.sofa_lamp
+    - light.desk_lamp
+    data:
+      brightness: 255
+      transition: 1800
+      kelvin: 2200
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alexa_alarm
+  - service: input_select.select_option
+    entity_id: input_select.alarm_zone
+    data:
+      option: None
+  id: c7a72dc0efc24787a9fa36c85544aaed
+- alias: Alexa Alarm - All
+  trigger:
+  - platform: state
+    entity_id: input_boolean.alexa_alarm
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_select.alarm_zone
+    state: All
+  action:
+  - service: light.turn_on
+    entity_id:
+    - group.bed_group
+    - light.olivia_lamp
+    - light.lounge_lamps
+    data:
+      brightness: 255
+      transition: 1800
+      kelvin: 2200
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alexa_alarm
+  - service: input_select.select_option
+    entity_id: input_select.alarm_zone
+    data:
+      option: None
+  id: b0660345a60c4c9b97ef853cdbdeca3f
+- alias: Alexa Alarm - Off
+  trigger:
+  - platform: state
+    entity_id: input_boolean.alexa_alarm
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_select.alarm_zone
+    state: None
+  action:
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.alexa_alarm
+  - service: input_select.select_option
+    entity_id: input_select.alarm_zone
+    data:
+      option: None
+  id: ba1417c0eabf486eb308d6e1e99a0054
+- id: '1550225205726'
+  alias: Test Kodi
+  trigger:
+    platform: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: call_service
+  action:
+    service_template: '{{ trigger.event.data.service }}'
+    data_template:
+      title: '{{ trigger.event.data.title }}'
+      message: '{{ trigger.event.data.message }}'
+      data:
+        icon: '{{ trigger.event.data.icon }}'

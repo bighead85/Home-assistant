@@ -1,11 +1,11 @@
       name: Magic Mirror
       image: /local/custom_ui/mirror/mirror.svg
       stylesheet: /local/custom_ui/mirror/mirror.css
-      hide_app_toolbar: #comment for testing
-#      warnings: #Uncomment for debug
+#      hide_app_toolbar: #comment for testing
+      warnings: #Uncomment for debug
       groups:
 
-#Sensors 
+#Sensors
        - name: temp_Sensors
          entities:
              - sensor.inside_temp
@@ -31,3 +31,7 @@
            - sensor.spotify_title
            - sensor.spotify_artist
            - sensor.spotify_source
+
+       - name: travel_sensor
+         entities:
+           - sensor.travel_time

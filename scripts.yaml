@@ -6,7 +6,10 @@
         data:
           entity_id: media_player.server
           method: VideoLibrary.Scan
-
+  update_image:
+    alias: Update Image
+    sequence:
+      - service: shell_command.update_image
   restart_osmc:
     alias: Restart OSMC
     sequence:
@@ -39,6 +42,24 @@
       service: media_player.media_play
       data:
         entity_id: media_player.bedroom
+  olivia_pause:
+    alias: Olivia Pause
+    sequence:
+      service: media_player.media_pause
+      data:
+        entity_id: media_player.olivia
+  olivia_play:
+    alias: Olivia Play
+    sequence:
+      service: media_player.media_play
+      data:
+        entity_id: media_player.Olivia
+  olivia_stop:
+    alias: Olivia Stop
+    sequence:
+      service: media_player.media_stop
+      data:
+        entity_id: media_player.olivia
   tv_stop:
     alias: TV Stop
     sequence:
@@ -56,3 +77,82 @@
     sequence:
       service: ifttt.trigger
       data: {"event": "where_phone"}
+  quiet_my_phone:
+    alias: "Quiet Mark's Phone"
+    sequence:
+      service: ifttt.trigger
+      data: {"event": "quiet_phone"}
+
+  camera_privacy_on:
+    alias: "Privacy Mode On"
+    sequence:
+      - service: ifttt.trigger
+        data: {"event": "privacy_on"}
+      - service: shell_command.privacy_on
+  camera_privacy_off:
+    alias: "Privacy Mode Off"
+    sequence:
+      - service: ifttt.trigger
+        data: {"event": "privacy_off"}
+      - service: shell_command.privacy_off
+
+  thunder:
+    alias: Thunder
+    sequence:
+      - alias: lights
+        service: script.turn_on
+        data:
+          entity_id: script.flash_loop
+
+      - alias: sounds
+        service: media_player.play_media
+        data:
+          entity_id:
+            - media_player.living_room
+          media_content_id: "Powerful Thunder Crack - Scary Halloween Sound Effects"
+          media_content_type: "AMAZON_MUSIC"
+
+      - alias: lightsOff
+        service: script.turn_off
+        data:
+          entity_id: script.flash_loop
+
+  flash_lights:
+    alias: Flash On
+    sequence:
+      - alias: Light Flash On
+        service: light.turn_on
+        data:
+          entity_id: light.tv_bias
+          color_name: white
+      - delay:
+          # time for flash light on
+          milliseconds: 200
+      - alias: Light Flash Off
+        service: light.turn_off
+        data:
+          entity_id: light.tv_bias
+
+      - alias: loop_flash
+        service: script.turn_on
+        data:
+          entity_id: script.flash_loop
+
+
+  flash_loop:
+    alias: Flash loop
+    sequence:
+      - delay:
+          # time for flash light off
+          seconds: 1
+      - alias: loop_flash
+        service: script.turn_on
+        data:
+          entity_id: script.flash_lights
+
+  coat:
+    sequence:
+      service: media_player.alexa_tts
+      data_template:
+        entity_id: media_player.living_room
+        message: Currently the flat is at {{ states("sensor.inside_temp") }} degrees, it is  {{ states("sensor.outside_temperature") }} outside

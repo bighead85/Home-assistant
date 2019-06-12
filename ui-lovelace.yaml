@@ -1,0 +1,753 @@
+title: SmartHub
+resources:
+  - url: /local/custom_ui/mini-media-player.js?v=0.9.0
+    type: module
+  - url: https://unpkg.com/moment@2.22.2/moment.js
+    type: js
+  - url: /local/custom_ui/calendar-card.js?v=1.0.1
+    type: module
+views:
+##################Home Screen
+  - title: Home
+    cards:
+
+##Dashboard
+      - type: glance
+        title: Dashboard
+        entities:
+          - sun.sun
+          - sensor.inside_temp
+          - entity: sensor.dark_sky_temperature
+            name: Outside
+          - sensor.ssl_cert_expiry
+          - sensor.plex_server
+          - sensor.lounge_main_remote
+          - sensor.left_remote
+          - sensor.right_remote
+          - sensor.liv_main_remote
+          - sensor.liv_lamp_remote
+          - input_select.alarm_zone
+          - input_select.hass_theme
+          - entity: script.update_library
+            tap_action:
+              action: call-service
+              service: script.update_library
+          - entity: script.update_image
+            icon: mdi:camera-party-mode
+            tap_action:
+              action: call-service
+              service: script.update_image
+
+##End Dashboard
+##Spotify Media Player
+      - type: custom:mini-media-player
+        entity: media_player.spotify
+        icon: 'mdi:spotify'
+        artwork_border: true
+        show_source: true
+        artwork: cover
+        hide_power: true
+        show_progress: true
+        show_shuffle: true
+        consider_idle_after: 20
+
+##End Media Player
+##Portable
+      - type: glance
+        title: Portable
+        show_state: false
+        entities:
+          - device_tracker.oneplus6
+          - device_tracker.firetablet
+          - device_tracker.302060046
+          - device_tracker.mpxub
+          - device_tracker.imac
+##End Portable
+##Smart Home Devices Stack
+      - type: vertical-stack
+        cards:
+    ##On Devices
+          - type: entity-filter
+            entities:
+              - light.sofa_main
+              - light.sofa_lamp
+              - light.dining_main
+              - light.desk_lamp
+              - group.bed_group
+              - light.olivia_main
+              - light.olivia_lamp
+              - switch.one
+              - switch.two
+              - switch.three
+              - switch.5616264384f3eb22e5c6
+              - switch.four
+
+            state_filter:
+              - "on"
+            card:
+              type: entities
+              title: On Devices
+    ##End On Devices
+    ##Off Devices
+          - type: entity-filter
+            show_empty: false
+            entities:
+              - entity: light.sofa_main
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: light.sofa_lamp
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: light.dining_main
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: light.desk_lamp
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: group.bed_group
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: light.olivia_main
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: light.olivia_lamp
+                tap_action:
+                  action: toggle
+                  service: light.toggle
+              - entity: switch.one
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+              - entity: switch.two
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+              - entity: switch.5616264384f3eb22e5c6
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+              - entity: switch.three
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+              - entity: switch.four
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+            state_filter:
+              - "off"
+            card:
+              type: glance
+              title: Off Devices
+              show_state: false
+    ##End Off Devices
+    ##Errored Devices
+          - type: entity-filter
+            show_empty: false
+            entities:
+              - device_tracker.tradfri
+              - device_tracker.alexastick
+              - device_tracker.utvpc
+              - device_tracker.chromecast
+              - device_tracker.smarthub
+              - light.olivia_main
+              - light.olivia_lamp
+              - light.desk_lamp
+              - light.dining_main
+              - light.sofa_main
+              - light.sofa_lamp
+              - light.left
+              - light.right
+            state_filter:
+              - "not_home"
+              - "unavailable"
+            card:
+              type: glance
+              title: Errored Devices
+              show_state: false
+    ##End Errored Devices
+##End Smart Home Devices Stack
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.privacy
+            state: "off"
+        card:
+          type: picture-glance
+          title: Camera
+          entities:
+            - entity: script.camera_privacy_on
+              icon: mdi:camera-off
+              tap_action:
+                action: call-service
+                service: script.camera_privacy_on
+          camera_image: camera.camera
+
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.privacy
+            state: "on"
+        card:
+          type: entity-button
+          name: Camera
+          icon: mdi:camera
+          tap_action:
+            action: call-service
+            service: script.turn_on
+            service_data:
+              entity_id: script.camera_privacy_off
+          entity: script.camera_privacy_off
+
+##Weather
+      - type: vertical-stack
+        cards:
+          - type: picture
+            image: /local/camera.jpg
+
+          - type: weather-forecast
+            title: Weather
+            entity: weather.dark_sky
+##End Weather
+
+##Calendar
+      - type: horizontal-stack
+        cards:
+          - type: custom:calendar-card
+            name: What's On
+            showProgressBar: false
+            numberOfDays: 14
+            entities:
+              - calendar.mpatterson190285gmailcom
+              - calendar.holidays_in_united_kingdom
+
+          - type: vertical-stack
+            cards:
+              - type: custom:calendar-card
+                name: Birthdays
+                showProgressBar: false
+                numberOfDays: 14
+                entities:
+                  - calendar.contacts
+
+              - type: custom:calendar-card
+                name: Bins
+                numberOfDays: 14
+                entities:
+                  - calendar.bin_weeks
+##End Calendar
+
+##################End Home Screen
+
+##################Rooms Screen
+  - title: Rooms
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: Flat
+            entities:
+              - sensor.inside_temp
+              - entity: sensor.dark_sky_temperature
+                name: Outside
+              - input_select.alarm_zone
+              - entity: script.update_library
+                tap_action:
+                  action: call-service
+                  service: script.update_library
+              - entity: switch.one
+                tap_action:
+                  action: toggle
+                  service: switch.toggle
+          ##Spotify Media Player
+          - type: custom:mini-media-player
+            entity: media_player.spotify
+            icon: 'mdi:spotify'
+            artwork_border: true
+            power_color: false
+            show_source: true
+            artwork: cover
+            hide_power: true
+            show_progress: true
+            show_shuffle: true
+            consider_idle_after: 20
+          ##End Media Player
+
+      ##Bedroom
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            image: /local/custom_ui/Pics/bedroom_d.jpg
+            title: Bedroom
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.bedroom_bedtime
+            hold_action:
+              action: more-info
+            entities:
+              - group.bed_group
+              - scene.bedroom_bedtime
+              - scene.bedroom_bright
+              - switch.four
+              - media_player.bedroom
+          - type: conditional
+            conditions:
+              - entity: media_player.bedroom
+                state_not: "idle"
+            card:
+            ##Media Player
+              type: custom:mini-media-player
+              entity: media_player.bedroom
+              icon: 'mdi:cast'
+              artwork_border: true
+              power_color: false
+              show_source: true
+              artwork: cover
+              hide_volume: true
+              hide_power: true
+              show_progress: true
+            ##End Media Player
+      ##End Bedroom
+      ##Oliviaroom
+      - type: vertical-stack
+        cards:
+          - type: picture-glance
+            image: /local/custom_ui/Pics/olivia.jpg
+            title: Olivia's Room
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.olivia_room_normal
+            hold_action:
+              action: more-info
+            entities:
+              - light.olivia_lamp
+              - light.olivia_main
+              - scene.olivia_room_normal
+              - scene.olivia_room_bright
+              - scene.olivia_room_story_time
+              - scene.olivia_room_bedtime
+              - media_player.olivia
+              - switch.three
+          - type: conditional
+            conditions:
+              - entity: media_player.olivia
+                state_not: "off"
+            card:
+            ##Media Player
+              type: custom:mini-media-player
+              entity: media_player.olivia
+              icon: 'mdi:desktop-mac'
+              artwork_border: true
+              power_color: false
+              show_source: true
+              artwork: cover
+              hide_volume: true
+              hide_power: true
+              show_progress: true
+            ##End Media Player
+      ##End Oliviaroom
+
+      - type: vertical-stack
+        cards:
+          ##Lounge
+          - type: vertical-stack
+            cards:
+              - type: picture-glance
+                image: /local/custom_ui/Pics/lounge.jpg
+                title: Lounge
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lounge_normal
+                hold_action:
+                  action: more-info
+                entities:
+                  - light.sofa_lamp
+                  - light.sofa_main
+                  - switch.two
+                  - scene.lounge_relax
+                  - scene.lounge_normal
+                  - scene.lounge_bright
+                  - scene.movie_time
+                  - media_player.tv
+              - type: conditional
+                conditions:
+                  - entity: media_player.tv
+                    state: "playing"
+                card:
+                ##Media Player
+                  type: custom:mini-media-player
+                  entity: media_player.tv
+                  icon: 'mdi:television-box'
+                  artwork_border: true
+                  power_color: false
+                  show_source: true
+                  artwork: cover
+                  hide_volume: true
+                  hide_power: true
+                  show_progress: true
+                ##End Media Player
+              - type: conditional
+                conditions:
+                  - entity: media_player.tv
+                    state: "paused"
+                card:
+                ##Media Player
+                  type: custom:mini-media-player
+                  entity: media_player.tv
+                  icon: 'mdi:television-box'
+                  artwork_border: true
+                  power_color: false
+                  show_source: true
+                  artwork: cover
+                  hide_volume: true
+                  hide_power: true
+                  show_progress: true
+                ##End Media Player
+              - type: conditional
+                conditions:
+                  - entity: media_player.living_room
+                    state_not: "standby"
+                card:
+                ##Media Player
+                  type: custom:mini-media-player
+                  entity: media_player.living_room
+                  icon: 'mdi:speaker-wireless'
+                  artwork_border: true
+                  power_color: false
+                  show_source: true
+                  artwork: cover
+                  hide_volume: true
+                  hide_power: true
+                  show_progress: true
+                ##End Media Player
+              - type: conditional
+                conditions:
+                  - entity: media_player.fire
+                    state: "playing"
+                  - entity: sensor.fire_kodi
+                    state_not: "org.xbmc.kodi"
+                card:
+                ##Media Player
+                  type: custom:mini-media-player
+                  entity: media_player.fire
+                  icon: 'mdi:television-box'
+                  artwork_border: true
+                  power_color: false
+                  show_source: true
+                  artwork: cover
+                  hide_volume: true
+                  hide_power: true
+                  show_progress: true
+                ##End Media Player
+            ##End Lounge
+            ##Dining
+              - type: picture-glance
+                image: /local/custom_ui/Pics/dining.jpg
+                title: Dining/Work
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.work
+                hold_action:
+                  action: more-info
+                entities:
+                  - light.desk_lamp
+                  - light.dining_main
+                  - switch.5616264384f3eb22e5c6
+                  - scene.work
+                ##End Dining
+
+
+  - title: Floorplan
+    panel: true
+    path: floorplan
+    cards:
+      - type: picture-elements
+        image: /local/custom_ui/floorplan/floorplan-lovelace.svg
+        style:
+          width: 80%
+        elements:
+          - type: state-badge
+            entity: sensor.inside_temp
+            style:
+              left: 9%
+              top: 10%
+          - type: state-badge
+            entity: sensor.dark_sky_temperature
+            style:
+              left: 92%
+              top: 10%
+          - type: state-badge
+            entity: sensor.plex_server
+            style:
+              left: 9%
+              top: 40%
+          - type: state-badge
+            entity: sensor.ssl_cert_expiry
+            style:
+              left: 9%
+              top: 25%
+          - type: state-badge
+            entity: sensor.dark_sky_summary
+            style:
+              left: 92%
+              top: 25%
+          - type: state-badge
+            entity: sensor.dark_sky_summary_0d
+            style:
+              left: 92%
+              top: 40%
+          - type: state-badge
+            entity: updater.update
+            style:
+              left: 99%
+              top: 55%
+          - type: icon
+            icon: mdi:home-variant
+            title: Welcome Home
+            entity: scene.daddys_home
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.daddys_home
+            style:
+              left: 35%
+              top: 2%
+          - type: icon
+            icon: mdi:home-outline
+            title: All Off
+            entity: scene.all_off
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.all_off
+            style:
+              left: 65%
+              top: 2%
+          - type: state-icon
+            entity: media_player.fire
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.fire
+            style:
+              top: 8%
+              left: 75%
+          - type: state-icon
+            entity: media_player.tv
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.tv
+            style:
+              top: 8%
+              left: 65%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.sofa_main
+            style:
+              top: 18%
+              left: 65%
+          - type: state-icon
+            entity: media_player.living_room
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.living_room
+            style:
+              top: 18%
+              left: 75%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.sofa_lamp
+            style:
+              top: 27%
+              left: 75%
+          - type: state-icon
+            entity: scene.lounge_relax
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.lounge_relax
+            style:
+              top: 27%
+              left: 68%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.dining_main
+            style:
+              top: 18%
+              left: 38%
+          - type: state-icon
+            entity: scene.work
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.work
+            style:
+              top: 18%
+              left: 25%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: switch.5616264384f3eb22e5c6
+            style:
+              top: 23%
+              left: 35%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.desk_lamp
+            style:
+              top: 23%
+              left: 25%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: switch.one
+            style:
+              top: 45%
+              left: 38%
+          - type: state-icon
+            entity: media_player.bedroom
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.bedroom
+            style:
+              top: 85%
+              left: 75%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: switch.four
+            style:
+              top: 90%
+              left: 75%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.left
+            style:
+              top: 78%
+              left: 55%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.right
+            style:
+              top: 85%
+              left: 55%
+          - type: state-icon
+            entity: scene.bedroom_bedtime
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.bedroom_bedtime
+            style:
+              top: 70%
+              left: 55%
+          - type: state-icon
+            entity: scene.bedroom_bright
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.bedroom_bright
+            style:
+              top: 70%
+              left: 75%
+          - type: state-icon
+            entity: media_player.bedroom_2
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.bedroom_2
+            style:
+              top: 90%
+              left: 55%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.olivia_lamp
+            style:
+              top: 90%
+              left: 25%
+          - type: state-icon
+            entity: media_player.olivia
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.olivia
+            style:
+              top: 85%
+              left: 25%
+          - type: state-icon
+            entity: media_player.olivia_2
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.olivia_2
+            style:
+              top: 90%
+              left: 45%
+          - type: state-icon
+            tap_action:
+              action: toggle
+            entity: light.olivia_main
+            style:
+              top: 80%
+              left: 35%
+          - type: state-icon
+            entity: scene.olivia_room_bedtime
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.olivia_room_bedtime
+            style:
+              top: 70%
+              left: 40%
+          - type: state-icon
+            entity: scene.olivia_room_story_time
+            tap_action:
+              action: call-service
+              service: scene.turn_on
+              service_data:
+                entity_id: scene.olivia_room_story_time
+            style:
+              top: 70%
+              left: 25%
+          - type: state-icon
+            entity: camera.camera
+            tap_action:
+              action: more-info
+            style:
+              top: 52%
+              left: 48%

@@ -1,6 +1,6 @@
 <link rel="import" href="/local/custom_ui/mirror/mirror.html" async>
 
-<dom-module id="ha-panel-mirror"> 
+<dom-module id="ha-panel-mirror">
 
   <template>
     <style include="ha-style">
@@ -27,7 +27,7 @@
     </app-toolbar>
 
     <div class$='[[containerClass]]'>
-      <ha-floorplan hass=[[hass]] config=[[panel.config]] is-panel></ha-floorplan>
+      <ha-mirror hass=[[hass]] config=[[panel.config]] is-panel></ha-mirror>
     </div>
   </template>
 
@@ -47,7 +47,7 @@
       },
       showMenu: {
         type: Boolean,
-        value: false,
+        value: true,
       },
       showAppToolbar: {
         type: Boolean,

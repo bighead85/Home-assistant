@@ -27,6 +27,9 @@
        state: off
      light.desk_lamp:
       state: off
+     light.tv_bias:
+       rgb_color: [52,52,52]
+       brightness: 109
 
 - name: Lounge Relax
   entities:
@@ -42,6 +45,9 @@
        state: on
        brightness: 255
        kelvin: 2200
+     light.tv_bias:
+       rgb_color: [255,23,154]
+       brightness: 109
 
 - name: Lounge Bright
   entities:
@@ -60,16 +66,72 @@
 
 - name: Sofa Relax
   entities:
-    light.sofa_main:
+     light.sofa_main:
       state: off
-    light.dining_main:
+     light.dining_main:
       state: off
-    light.sofa_lamp:
+     light.sofa_lamp:
        state: on
        brightness: 255
        kelvin: 2200
-    light.desk_lamp:
+     light.desk_lamp:
        state: off
+     light.tv_bias:
+       state: on
+       rgb_color: [255,23,154]
+       brightness: 109
+
+- name: Movie Time
+  entities:
+    light.sofa_main:
+      state: off
+    light.dining_main:
+      state: on
+      rgb_color: [6,6,109]
+      brightness: 40
+    light.sofa_lamp:
+      state: off
+    light.desk_lamp:
+      state: off
+    light.tv_bias:
+      state: on
+      rgb_color: [16,255,16]
+      brightness: 40
+
+- name: TV Normal
+  entities:
+    light.tv_bias:
+       state: on
+       rgb_color: [52,52,52]
+       brightness: 109
+
+- name: TV Blue
+  entities:
+    light.tv_bias:
+       state: on
+       rgb_color: [0,205,0]
+       brightness: 109
+
+- name: TV Green
+  entities:
+    light.tv_bias:
+       state: on
+       rgb_color: [0,0,205]
+       brightness: 109
+
+- name: TV Red
+  entities:
+    light.tv_bias:
+       state: on
+       rgb_color: [205,0,0]
+       brightness: 109
+
+- name: TV Pink
+  entities:
+    light.tv_bias:
+       state: on      
+       rgb_color: [254,204,0]
+       brightness: 109
 
 - name: Olivia Room Normal
   entities:
@@ -122,6 +184,16 @@
        brightness: 255
        transition: 0
        kelvin: 4000
+
+- name: All Off
+  entities:
+     group.lights_group:
+       state: off
+
+- name: daddys home
+  entities:
+     group.lamps_group:
+       state: on
 
 
 #Ikea Colours Default Moods

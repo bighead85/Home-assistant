@@ -1,0 +1,34 @@
+"sensor.*_remote":
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: >
+      if (state >= 75) return 'rgb(0,255,0)';
+      else if (state > 20) return 'rgb(255,191,0)';
+      else if (state <= 20) return 'rgb(255,0,0)';
+
+"device_tracker.*":
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: >
+      if (state === 'home') return 'rgb(5,119,34)';
+      return 'rgb(128,128,128)';
+
+"sensor.*_temp*":
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: >
+      if (state >= 25) return 'rgb(255,0,0)';
+      else if (state <= 10) return 'rgb(23,225,239)';
+
+sensor.plex_server:
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: >
+      if (state >= 1) return 'rgb(255,191,0)';
+
+sensor.ssl_cert_expiry:
+  custom_ui_state_card: state-card-custom-ui
+  templates:
+    icon_color: >
+      if (state =< 20) return 'rgb(255,191,0)';
+      else if (state < 10) return 'rgb(255,0,0)';

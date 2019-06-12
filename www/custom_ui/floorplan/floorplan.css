@@ -93,7 +93,7 @@ svg, svg * {
 /* Light */
 
 .light-off {
-  fill: #C3B7F4 !important;
+  fill: #808080 !important;
 }
 
 .light-on {
@@ -103,7 +103,7 @@ svg, svg * {
 /* Switch*/
 
 .switch-off {
-  fill: #C3B7F4 !important;
+  fill: #808080 !important;
 }
 
 .switch-on {

@@ -12,6 +12,12 @@ homeassistant:
   time_zone: Europe/London
   # Customization file
   customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
+
+  auth_providers:
+   - type: homeassistant
+  # - type: legacy_api_password
+
 
 # Show links to resources in log and frontend
 #introduction:
@@ -26,10 +32,16 @@ frontend:
   #   - /local/custom_ui/state-card-floorplan.html
   extra_html_url:
      - /local/custom_ui/state-card-mini-media-player.html
+    # - /local/custom_ui/state-card-custom-ui.html
+lovelace:
+  mode: yaml
+
 # Enables configuration UI
 config:
-#Allow Python Scripts is python_scripts sub directory
-python_script:
+
+customizer:
+  custom_ui: hosted
+
 #Theme front page by user select
 input_select:
   hass_theme:
@@ -89,16 +101,18 @@ updater:
 # Discover some devices automatically
 #discovery:
 
-#Networked Devices
-device_tracker:
-  platform: bt_home_hub_5
-  host: 192.168.137.254
-
 #Ikea Lights
 tradfri:
    host: "192.168.137.35"
-#   #api_key: "qEaisFnQT23cUC3R" #Not needed since version 57
 
+
+##TV BIAS Lights
+light:
+  - platform: flux_led
+    devices:
+      192.168.137.158:
+        name: TV BIAS
+        mode: "rgb"
 
 media_player:
   #Bedroom OSMC
@@ -130,21 +144,37 @@ media_player:
     host: 192.168.137.1
     name: server
   #Alexa Stick All (TV)
-  - platform: firetv
+  - platform: androidtv
     name: Fire
-  #ChromeCast
-  - platform: cast
+    host: 192.168.137.29
+    adbkey: "/home/homeassistant/.homeassistant/adbkey"
+
+
   #Spotify
   - platform: spotify
     client_id: !secret spot_id
     client_secret: !secret spot_pwd
 
-#Caravan Monitor
-# panel_iframe:
-#   caravan:
-#     title: 'Caravan'
-#     icon: 'mdi:caravan'
-#     url: !secret caravan
+alexa_media:
+  accounts:
+  #Alexa
+    email: !secret alexa_user
+    password: !secret alexa_pass
+    url: amazon.co.uk
+
+
+
+  #ChromeCast
+cast:
+  media_player:
+    - host: 192.168.137.6
+
+# logger:
+#   default: error
+#   logs:
+#     custom_components.media_player.alexa: debug
+#     homeassistant.components.alexa: debug
+
 panel_custom:
   - name: floorplan
     sidebar_title: Floorplan
@@ -168,38 +198,55 @@ history:
 
 # Enables a map showing the location of tracked devices
 #map:
+##Calendar
 google:
-  client_id: !secret goo_id
-  client_secret: !secret goo_sec
+  client_id: !secret goo_cal_id
+  client_secret: !secret goo_cal_sec
 
 switch:
   #Energenie Switches
-  platform: command_line
-  switches:
-    coffee:
-      friendly_name: Coffee Machine
-      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_state: '/usr/bin/test -e /var/www/html/son1.lock && echo 0 || echo 1'
-      value_template: '{{ value == "0" }}'
-    echo:
-      friendly_name: Amazon Echo
-      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_state: '/usr/bin/test -e /var/www/html/son2.lock && echo 0 || echo 1'
-      value_template: '{{ value == "0" }}'
-    desk:
-      friendly_name: Desk
-      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_state: '/usr/bin/test -e /var/www/html/son3.lock && echo 0 || echo 1'
-      value_template: '{{ value == "0" }}'
-    bookcase:
-      friendly_name: Bookcase
-      command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
-      command_state: '/usr/bin/test -e /var/www/html/son4.lock && echo 0 || echo 1'
-      value_template: '{{ value == "0" }}'
+  - platform: command_line
+    switches:
+      one:
+        friendly_name: Coffee Machine
+        command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=1#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_state: '/usr/bin/test -e /var/www/html/son1.lock && echo 0 || echo 1'
+        value_template: '{{ value == "0" }}'
+      two:
+        friendly_name: Amazon Echo
+        command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=2#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_state: '/usr/bin/test -e /var/www/html/son2.lock && echo 0 || echo 1'
+        value_template: '{{ value == "0" }}'
+      three:
+        friendly_name: Olivia dot
+        command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=3#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_state: '/usr/bin/test -e /var/www/html/son3.lock && echo 0 || echo 1'
+        value_template: '{{ value == "0" }}'
+      four:
+        friendly_name: Bookcase
+        command_on: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#on" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_off: 'curl -X POST http://127.0.0.1:8181/hub.php -d "action=status&id=4#off" -H "Content-Type:application/x-www-form-urlencoded" > /dev/null 2>&1'
+        command_state: '/usr/bin/test -e /var/www/html/son4.lock && echo 0 || echo 1'
+        value_template: '{{ value == "0" }}'
+
+# switch tuya:
+#   - platform: tuya
+#     host: 192.168.137.21
+#     device_id: 5616264384f3eb22e5c6
+#     local_key: b0ef2083a74f50ef
+#     switches:
+#         switch1:
+#           friendly_name: nightLight
+#           id: 1
+tuya:
+  username: !secret tuser
+  password: !secret tpass
+  country_code: !secret tcode
+  platform: smart_life
+
 
 # Track the sun
 sun:
@@ -212,7 +259,7 @@ alexa:
       text: >
         Currently the flat is at {{ states("sensor.inside_temp") }} degrees and there are {{ states("sensor.plex_server") }} plex viewers.
         {% for attr in states.sensor.plex_server.attributes %}
-         {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" -%}
+         {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" and not attr=="icon" and not attr=="templates" and not attr=="icon_color" and not attr=="custom_ui_state_card"-%}
           {{attr}} is watching: {{states.sensor.plex_server.attributes[attr]}} .
          {%- endif %}
         {%- endfor -%}
@@ -229,14 +276,14 @@ alexa:
                 "Try not to get sunburned",
                 "I hope you know someone with a swimming pool" ] %}
 
-        {% if (states.sensor.outside_temperature.state | int) <= 13 %}
+        {% if (states.sensor.dark_sky_temperature.state | int) <= 13 %}
                 {% set weather_greeting = cold_temperature | random %}
         {% elif 13 < (states.sensor.outside_temperature.state | int) <= 25 %}
                 {% set weather_greeting = perfect_temperature | random %}
         {% elif (states.sensor.outside_temperature.state | int) > 25 %}
                 {% set weather_greeting = hot_temperature | random %}
         {% endif %}
-        {{ weather_greeting }} at {{states.sensor.outside_temperature.state}} degrees, {{states.sensor.outside_condition.state}}.
+        {{ weather_greeting }} at {{states.sensor.dark_sky_temperature.state}} degrees, {{states.sensor.dark_sky_summary.state}}.
 
     tempread:
       title: Flat Temperature
@@ -280,18 +327,19 @@ alexa:
         {% endif %}
         {% if (states.group.all_switches.state) == "on"  %}
         The following switches are currently on:
-            {% if (states.switch.desk.state) == "on" %}
-                    Desk,
+            {% if (states.switch.three.state) == "on" %}
+                    Olivia Dot,
             {% endif %}
-            {% if (states.switch.bookcase.state) == "on" %}
+            {% if (states.switch.four.state) == "on" %}
                     Bookcase Lights,
             {% endif %}
-            {% if (states.switch.coffee.state) == "on" %}
+            {% if (states.switch.one.state) == "on" %}
                     Coffee Machine,
             {% endif %}
-            {% if (states.switch.echo.state) == "on" %}
+            {% if (states.switch.two.state) == "on" %}
                     Living Room Echo,
             {% endif %}
+
         {% else %}
         All Switches Turned off.
         {% endif %}
@@ -304,189 +352,45 @@ alexa:
 
 sensor:
     # Weather prediction
-  - platform: yweather
-    woeid: !secret weather
-    name: Outside
+  - platform: darksky
+    api_key: !secret ds_key
+    forecast:
+      - 0
     monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-      - weather_current
       - temperature
-    scan_interval: 600
-    #Flat Forecast
-  - platform: yweather
-    woeid: !secret weather
-    forecast: 1
-    name: flat_day1
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret weather
-    forecast: 2
-    name: flat_day2
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret weather
-    forecast: 3
-    name: flat_day3
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret weather
-    forecast: 4
-    name: flat_day4
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-
-    # Weather prediction
-  - platform: yweather
-    woeid: !secret caravan_w
-    name: Caravan Outside
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-      - weather_current
-      - temperature
-    scan_interval: 600
-    #Caravan Forecast
-  - platform: yweather
-    woeid: !secret caravan_w
-    forecast: 1
-    name: caravan_day1
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret caravan_w
-    forecast: 2
-    name: caravan_day2
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret caravan_w
-    forecast: 3
-    name: caravan_day3
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-  - platform: yweather
-    woeid: !secret caravan_w
-    forecast: 4
-    name: caravan_day4
-    monitored_conditions:
-      - weather
-      - temp_min
-      - temp_max
-    scan_interval: 10800
-
+      - summary
+    scan_interval: 3600
   ##Templates
   - platform: template
     sensors:
-      ##Template to display forecast in single Card
+
       weekday:
         friendly_name: 'Weekday'
         value_template: '{{ now().strftime("%A") }}'
-      ##Flat 
-      fforecast_today:
-        friendly_name: "Today"
-        value_template: >
-          {{states.sensor.outside_condition.state}} - Min {{states.sensor.outside_temperature_min.state|round(0)}}°C / Max {{states.sensor.outside_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.outside_condition.attributes.entity_picture}}
-      fforecast_1:
-        value_template: >
-          {{states.sensor.flat_day1_condition.state}} - Min {{states.sensor.flat_day1_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day1_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.flat_day1_condition.attributes.entity_picture}}
-      fforecast_2:
-        value_template: >
-          {{states.sensor.flat_day2_condition.state}} - Min {{states.sensor.flat_day2_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day2_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.flat_day2_condition.attributes.entity_picture}}
-      fforecast_3:
-        value_template: >
-          {{states.sensor.flat_day3_condition.state}} - Min {{states.sensor.flat_day3_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day3_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.flat_day3_condition.attributes.entity_picture}}
-      fforecast_4:
-        value_template: >
-          {{states.sensor.flat_day4_condition.state}} - Min {{states.sensor.flat_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.flat_day4_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.flat_day4_condition.attributes.entity_picture}}
-      ##Caravan
-      cforecast_today:
-        friendly_name: "Today"
-        value_template: >
-          {{states.sensor.caravan_outside_condition.state}} - Min {{states.sensor.caravan_outside_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_outside_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.caravan_outside_condition.attributes.entity_picture}}
-      cforecast_1:
-        value_template: >
-          {{states.sensor.caravan_day1_condition.state}} - Min {{states.sensor.caravan_day1_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day1_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.caravan_day1_condition.attributes.entity_picture}}
-      cforecast_2:
-        value_template: >
-          {{states.sensor.caravan_day2_condition.state}} - Min {{states.sensor.caravan_day2_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day2_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.caravan_day2_condition.attributes.entity_picture}}
-      cforecast_3:
-        value_template: >
-          {{states.sensor.caravan_day3_condition.state}} - Min {{states.sensor.caravan_day3_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day3_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.caravan_day3_condition.attributes.entity_picture}}
-      cforecast_4:
-        value_template: >
-          {{states.sensor.caravan_day4_condition.state}} - Min {{states.sensor.caravan_day4_temperature_min.state|round(0)}}°C / Max {{states.sensor.caravan_day4_temperature_max.state|round(0)}}°C
-        entity_picture_template: >
-          {{states.sensor.caravan_day4_condition.attributes.entity_picture}}
+
       ##Date in word format
       date_long:
         value_template: >
-          {% set months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] %}
-          {% set month = months[now().strftime('%m') | int -1] %}
-          {% set day = ["Monday ", "Tuesday ", "Wednesday ", "Thursday ", "Friday ", "Saturday ", "Sunday "] %}
-          {% set day = day[now().strftime('%A') | int -1] %}
-          {{ day + now().strftime('%d') + ' ' + month + ' ' }}
+          {{ now().strftime("%A") + ' ' + now().strftime('%d') + ' ' + now().strftime('%b')}}
       ##Spotify Now playing
       spotify_title:
         value_template: >
           {% if is_state("media_player.spotify", "playing")%}
-            {{states.media_player.spotify.attributes.media_title}}
+            {{states.media_player.spotify.attributes.media_title  | truncate (50)}}
           {% else %}
 
           {% endif %}
         friendly_name: "Spotify Title"
+
       spotify_artist:
         value_template: >
           {% if is_state("media_player.spotify", "playing")%}
-            Artist: {{states.media_player.spotify.attributes.media_artist}}
+            {{states.media_player.spotify.attributes.media_artist | truncate (50)}}
           {% else %}
 
           {% endif %}
         friendly_name: "Spotify Artist"
+
       spotify_source:
         value_template: >
           {% if is_state("media_player.spotify", "playing")%}
@@ -495,6 +399,70 @@ sensor:
 
           {% endif %}
         friendly_name: "Spotify Source"
+      ##Travel_time
+      travel_time:
+        value_template: >
+            {{states.sensor.google_travel_time__driving.attributes.duration_in_traffic}}
+      ##Next Calendar Events
+      my_event_title:
+        friendly_name: "Event"
+        value_template: >
+            {{ states.calendar.mpatterson190285gmailcom.attributes.message | truncate (50)}}
+      my_event_time:
+        friendly_name: "Time"
+        value_template: >
+          {% set s_time = strptime(states.calendar.mpatterson190285gmailcom.attributes.start_time, "%Y-%m-%d %H:%M:%S").strftime("%H:%M") %}
+          {% set e_time = strptime(states.calendar.mpatterson190285gmailcom.attributes.end_time, "%Y-%m-%d %H:%M:%S").strftime("%H:%M") %}
+          {% set s_date = strptime(states.calendar.mpatterson190285gmailcom.attributes.start_time, "%Y-%m-%d %H:%M:%S").strftime("%d %b") %}
+          {% if (states.calendar.mpatterson190285gmailcom.attributes.all_day) == true %}
+            {{ s_date }}
+          {% else %}
+            {{ s_time }} to {{ e_time }} On {{ s_date }}
+          {% endif %}
+      my_event_description:
+        friendly_name: "Description"
+        value_template: >
+            {{ states.calendar.mpatterson190285gmailcom.attributes.description | truncate (50) }}
+      my_event_location:
+        friendly_name: "Location"
+        value_template: >
+            {{ states.calendar.mpatterson190285gmailcom.attributes.location }}
+      holiday_event_title:
+        friendly_name: "Holiday"
+        value_template: >
+          {% set s_date = strptime(states.calendar.holidays_in_united_kingdom.attributes.start_time, "%Y-%m-%d %H:%M:%S").strftime("%d %b") %}
+          {{ states.calendar.holidays_in_united_kingdom.attributes.message | truncate (27)}} On {{s_date}}
+      contacts_event_title:
+        friendly_name: "Event"
+        value_template: >
+            {{ states.calendar.contacts.attributes.message | truncate (50)}}
+      contacts_event_time:
+        friendly_name: "Time"
+        value_template: >
+          {% set s_time = strptime(states.calendar.contacts.attributes.start_time, "%Y-%m-%d %H:%M:%S").strftime("%H:%M") %}
+          {% set e_time = strptime(states.calendar.contacts.attributes.end_time, "%Y-%m-%d %H:%M:%S").strftime("%H:%M") %}
+          {% set s_date = strptime(states.calendar.contacts.attributes.start_time, "%Y-%m-%d %H:%M:%S").strftime("%d %b") %}
+          {% if (states.calendar.contacts.attributes.all_day) == true %}
+            {{ s_date }}
+          {% else %}
+            {{ s_time }} to {{ e_time }} On {{ s_date }}
+          {% endif %}
+      contacts_event_description:
+        friendly_name: "Description"
+        value_template: >
+            {{ states.calendar.contacts.attributes.description | truncate (50) }}
+      contacts_event_location:
+        friendly_name: "Location"
+        value_template: >
+            {{ states.calendar.contacts.attributes.location }}
+      fire_kodi:
+        value_template: >
+          {% if is_state("media_player.fire", "playing")%}
+            {{states.media_player.fire.attributes.source | truncate (50)}}
+          {% else %}
+                    state_not:
+          {% endif %}
+        friendly_name: "fire_source"
 
     #Inside Temp
   - platform: command_line
@@ -502,12 +470,7 @@ sensor:
     command: /usr/bin/php -r 'echo round(shell_exec("/usr/local/bin/temper-poll -c"))+3;'
     unit_of_measurement: "°C"
     scan_interval: 600
-    #Carvan Temp
-  - platform: command_line
-    name: Caravan Temp
-    command: "/bin/bash /home/homeassistant/.homeassistant/caravan_sensor.sh"
-    unit_of_measurement: "°C"
-    scan_interval: 600
+
     ##SSL Cert Expiry
   - platform: command_line
     name: SSL cert expiry
@@ -527,19 +490,30 @@ sensor:
     name: Plex Server
     username: !secret plexusr
     password: !secret plexpwd
-
+    #Google travel info
+  - platform: google_travel_time
+    api_key: !secret goo_map
+    origin: place_id:ChIJIz_KL4nzbUgRookwKvsq7Fg
+    destination: place_id:ChIJOwiW4P91dEgRqU8ovGP1VaA
+    options:
+      units: imperial
 #camera image
 camera:
   - platform: local_file
     name: Current Image
-    file_path: /var/www/html/images/camera.jpg
+    file_path: /home/homeassistant/.homeassistant/www/camera.jpg
+
+  - platform: ffmpeg
+    name: Camera
+    input: rtsp://admin:NYQPSW@192.168.137.23:554/H264/ch1/main/av_stream
+
   # - platform: generic
   #   name: Traffic
   #   still_image_url: https://www.google.com/maps/@51.0025985,-3.2068304,13z/data=!5m1!1e1?hl=en-GB
 #Fake buttons for Alexa config
 emulated_hue:
   host_ip: 192.168.137.12
-  listen_port: 80
+  listen_port: 8300
   off_maps_to_on_domains:
     - script
   expose_by_default: false
@@ -552,16 +526,42 @@ emulated_hue:
 shell_command:
   restartosmc: echo homeassistant | sudo -S systemctl restart mediacenter
   reboot: echo homeassistant | sudo -S reboot
+  renew_ssl: ~/certbot/certbot-auto renew --quiet --no-self-upgrade --standalone --preferred-challenges tls-sni-01 --tls-sni-01-port 8123 --pre-hook "sudo systemctl stop home-assistant" --post-hook "sudo systemctl start home-assistant"
+  update_image: /opt/vc/bin/raspistill -n -w 800 -h 600 -o /home/homeassistant/.homeassistant/www/camera.jpg &
+  privacy_on: touch /home/homeassistant/.homeassistant/privacy.txt
+  privacy_off: rm  /home/homeassistant/.homeassistant/privacy.txt
 # Text to speech
 tts:
-  - platform: google
+  - platform: google_translate
+    service_name: google_say
 
 #Notifications from PushBullet
 notify:
   - name: pushbullet
     platform: pushbullet
     api_key: !secret push
+  - platform: kodi
+    name: bedroom
+    host: 192.168.137.12
+    port: 1025
+    username: !secret bedusr
+    password: !secret bedpwd
+  - platform: kodi
+    name: tv
+    host: 192.168.137.29
+    port: 1025
+    username: !secret tvusr
+    password: !secret tvpwd
+  - platform: nfandroidtv
+    name: FTV
+    host: 192.168.137.29
 
+binary_sensor:
+  - platform: command_line
+    command: '/usr/bin/test -e /home/homeassistant/.homeassistant/privacy.txt && echo 0 || echo 1'
+    name: Privacy
+    payload_on: 0
+    payload_off: 1
 
 # binary_sensor:
 #   - platform: command_line
@@ -577,9 +577,48 @@ notify:
 #     - title: {{states.media_player.spotify.media_title}} - {{states.media_player.spotify.media_artist}}
 #       description: "{% if {{states.media_player.spotify.playing}} %}---{% else %} Nothing Playing {% endif %}"
 #
+weather:
+  - platform: darksky
+    api_key: !secret ds_key
+    # latitude: !secret ds_lat
+    # longitude: !secret ds_long
+    units: uk2
+    mode: daily
+
+#Networked Devices
+device_tracker:
+#   platform: bt_home_hub_5
+#   host: 192.168.137.254
+
+
+  - platform: ping
+    hosts:
+      utvpc: 192.168.137.1
+      xbox360: 192.168.137.3
+      oneplus6: 192.168.137.4
+      mpxub: 192.168.137.5
+      chromecast: 192.168.137.6
+      302060046: 192.168.137.9
+      firetablet: 192.168.137.11
+      Smarthub: 192.168.137.12
+      workphone: 192.168.137.14
+      imac: 192.168.137.16
+      alexastick: 192.168.137.29
+      livingroomecho: 192.168.137.30
+      bedroomdot: 192.168.137.31
+      oliviadot: 192.168.137.32
+      tradfri: 192.168.137.35
+
+  # - platform: nmap_tracker
+  #   hosts: 192.168.137.30-32
+  #   home_interval: 30
+  #   consider_home: 1800
+  #   scan_options: -F --host-timeout 5s
+system_health:
 
 
 group: !include groups.yaml
+
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml

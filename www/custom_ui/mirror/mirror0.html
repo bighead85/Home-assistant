@@ -1,17 +1,17 @@
 <!--
-  Floorplan for Home Assistant
-  Version: 1.0.13
-  https://github.com/pkozul/ha-floorplan
+  mirror for Home Assistant
+  Version: 1.0.6
+  https://github.com/pkozul/ha-mirror
 -->
 
 <script src="lib/jquery-3.2.1.min.js"></script>
-<script src="lib/moment.min.js"></script>
+<script src="lib//moment.min.js"></script>
 <script src="lib/svg-pan-zoom.min.js"></script>
 
 <!-- As documented here for chrome, removes the need for touchstart -->
 <meta name="viewport" content="width=device-width">
 
-<dom-module id="ha-floorplan">
+<dom-module id="ha-mirror">
 
   <template>
     <style>
@@ -59,99 +59,92 @@
       <ul></ul>
     </div>
 
-    <div id="floorplan" on-tap="stopPropagation"></div>
+    <div id="mirror" on-tap="stopPropagation"></div>
 
   </template>
 
 </dom-module>
 
 <script>
+  Polymer({
+    is: 'ha-mirror',
 
-  class HaFloorplan extends Polymer.Element {
-    static get is() { return 'ha-floorplan'; }
+    ready() {
+    },
 
-    static get properties() {
-      return {
-        hass: {
-          type: Object,
-          observer: 'hassChanged'
-        },
-        inDialog: {
-          type: Boolean,
-          value: false,
-        },
-        isPanel: {
-          type: Boolean,
-          value: false,
-        },
-        config: {
-          type: Object,
-        },
-        isLoading: {
-          type: Boolean,
-          value: true,
-        },
-        timeDifference: {
-          type: Number,
-          value: undefined,
-        },
-        entityConfigs: {
-          type: Array,
-          value: () => { return []; },
-        },
-        elementConfigs: {
-          type: Array,
-          value: () => { return []; },
-        },
-        cssRules: {
-          type: Array,
-          value: () => { return []; },
-        },
-        isInitialized: {
-          type: Boolean,
-          value: false,
-        },
-      };
-    }
+    attached() {
+      this.onAttached();
+    },
 
-    connectedCallback() {
-      super.connectedCallback();
+    detached() {
+    },
 
-      if (!this.isInitialized) {
-        this.initFloorplan();
-      }
-    }
+    properties: {
+      hass: {
+        type: Object,
+        observer: 'hassChanged'
+      },
+      inDialog: {
+        type: Boolean,
+        value: false,
+      },
+      isPanel: {
+        type: Boolean,
+        value: false,
+      },
+      config: {
+        type: Object,
+      },
+      isLoading: {
+        type: Boolean,
+        value: true,
+      },
+      timeDifference: {
+        type: Number,
+        value: undefined,
+      },
+      entityConfigs: {
+        type: Array,
+        value: () => { return []; },
+      },
+      elementConfigs: {
+        type: Array,
+        value: () => { return []; },
+      },
+      cssRules: {
+        type: Array,
+        value: () => { return []; },
+      },
+    },
 
     stopPropagation(e) {
       e.stopPropagation();
-    }
+    },
 
-    hassChanged(newHass, oldHass) {
+    hassChanged: function (newHass, oldHass) {
       this.handleEntities(newHass.states);
-    }
+    },
 
-    initFloorplan() {
-      this.isInitialized = true;
-
+    onAttached() {
       window.onerror = this.handleWindowError.bind(this);
 
       if (!this.config.groups) {
         this.isLoading = false;
-        this.warn(`Cannot find 'groups' in floorplan configuration`);
+        this.warn(`Cannot find 'groups' in mirror configuration`);
         return;
       }
 
       let invalidGroups = this.config.groups.filter(x => x.entities && x.elements);
       if (invalidGroups.length) {
         this.isLoading = false;
-        this.warn(`A group cannot contain both 'entities' and 'elements' in floorplan configuration`);
+        this.warn(`A group cannot contain both 'entities' and 'elements' in mirror configuration`);
         return;
       }
 
       invalidGroups = this.config.groups.filter(x => !x.entities && !x.elements);
       if (invalidGroups.length) {
         this.isLoading = false;
-        this.warn(`A group must contain either 'entities' or 'elements' in floorplan configuration`);
+        this.warn(`A group must contain either 'entities' or 'elements' in mirror configuration`);
         return;
       }
 
@@ -166,7 +159,7 @@
       });
 
       this.addExternalCss(() => {
-        this.loadFloorPlan(() => {
+        this.loadmirror(() => {
           this.isLoading = false;
           this.handleEntities(this.hass.states);
         });
@@ -175,7 +168,7 @@
       if (this.config.groups.find(entityGroup => entityGroup.state_transitions)) {
         setInterval(this.updateStateTransitions.bind(this), 100);
       }
-    }
+    },
 
     handleWindowError(msg, url, lineNo, columnNo, error) {
       if (msg.toLowerCase().indexOf("script error") >= 0) {
@@ -193,7 +186,7 @@
       }
 
       return false;
-    }
+    },
 
     addExternalCss(callback) {
       if (!this.config.stylesheet) {
@@ -202,20 +195,18 @@
 
       this.loadStyleSheet(this.config.stylesheet + '?cacheBuster=' + (new Date().getTime()), function (success, link) {
         if (success) {
-          this.instance.root.appendChild(link);
+          Polymer.dom(this.instance.root).appendChild(link);
           let styleSheet = link['sheet'];
-          setTimeout(() => {
-            this.instance.cssRules = this.instance.getArray(styleSheet.cssRules);
-            callback();
-          }, 1000);
+          this.instance.cssRules = this.instance.getArray(styleSheet.cssRules);
+          callback();
         }
         else {
           this.instance.error("Error loading stylesheet");
         }
       }.bind({ instance: this, callback: callback }));
-    }
+    },
 
-    loadFloorPlan(callback) {
+    loadmirror(callback) {
       jQuery.ajax({
         url: this.config.image + '?cacheBuster=' + (new Date().getTime()),
         success: function (result) {
@@ -226,7 +217,7 @@
           $(svg).css('position', this.instance.isPanel ? 'absolute' : 'relative');
           $(svg).css('cursor', 'default');
 
-          this.instance.$.floorplan.appendChild(svg);
+          Polymer.dom(this.instance.$.mirror).node.appendChild(svg);
 
           let uniqueId = (new Date()).getTime();
 
@@ -330,7 +321,7 @@
                 };
               });
 
-              for (let svgElementId in entityConfig.svgElementConfigs) {
+              for (svgElementId in entityConfig.svgElementConfigs) {
                 let svgElementConfig = entityConfig.svgElementConfigs[svgElementId];
 
                 let svgElement = $(svgElementConfig.svgElement);
@@ -378,10 +369,10 @@
 
         }.bind({ instance: this, callback: callback })
       });
-    }
+    },
 
     handleEntities(entities) {
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = Polymer.dom(this.$.mirror).querySelector('svg');
 
       for (let entityId in entities) {
         let entityState = entities[entityId];
@@ -455,7 +446,7 @@
           }
 
           if (entityConfig.group.image_template) {
-            let imageUrl = this.assemble(entityConfig.group.image_template, entityState, entities);
+            imageUrl = this.assemble(entityConfig.group.image_template, entityState, entities);
             if (entityConfig.imageUrl !== imageUrl) {
               entityConfig.imageUrl = imageUrl;
               this.loadImage(imageUrl, entityId, entityState, (embeddedSvg, entityState) => {
@@ -525,7 +516,7 @@
           }
         }
       }
-    }
+    },
 
     setHoverOverText(element, entityState) {
       let title = $(element).find('title');
@@ -538,10 +529,10 @@
 
         $(title).html(titleText);
       }
-    }
+    },
 
     loadImage(imageUrl, entityId, entityState, callback) {
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = Polymer.dom(this.$.mirror).querySelector('svg');
       jQuery.ajax({
         url: imageUrl, // allow the browser cache to be used
         success: function (result) {
@@ -576,7 +567,7 @@
 
         }.bind(this)
       });
-    }
+    },
 
     addClass(entityId, svgElement, className) {
       if ($(svgElement).hasClass('ha-leave-me-alone')) {
@@ -596,10 +587,10 @@
           }
         }
       }
-    }
+    },
 
     removeClasses(entityId, svgElement, classes) {
-      for (let className of classes) {
+      for (className of classes) {
         //console.log(`${entityId}: removing class "${className}" (${svgElement.id})`);
         if ($(svgElement).hasClass(className)) {
           $(svgElement).removeClass(className);
@@ -614,13 +605,13 @@
           }
         }
       }
-    }
+    },
 
     updateStateTransitions() {
       if (!this.cssRules || !this.cssRules.length)
         return;
 
-      let svg = this.$.floorplan.querySelector('svg');
+      let svg = Polymer.dom(this.$.mirror).querySelector('svg');
 
       for (let entityId in this.entityConfigs) {
         let entityConfig = this.entityConfigs[entityId];
@@ -672,7 +663,7 @@
           }
         }
       }
-    }
+    },
 
     setEntityStyle(svgElementConfig, svgElement, entityConfig, state) {
       let stateConfig = entityConfig.group.states.find(stateConfig => (stateConfig.state === entityConfig.lastState));
@@ -703,11 +694,9 @@
           }
         }
       }
-    }
+    },
 
     onElementClick(e) {
-      e.stopPropagation();
-
       let svgElement = e.target;
 
       let elementConfig = this.instance.elementConfigs[this.elementId];
@@ -719,7 +708,7 @@
 
               switch (action.service) {
                 case 'toggle':
-                  let svg = this.instance.$.floorplan.querySelector('svg');
+                  let svg = Polymer.dom(this.instance.$.mirror).querySelector('svg');
                   let classes = action.data.classes;
 
                   for (let otherElementId of action.data.elements) {
@@ -755,18 +744,16 @@
           }
         }
       }
-    }
+    },
 
     onEntityClick(e) {
-      e.stopPropagation();
-
       let entityId = this.entityId;
 
       let entityConfig = this.instance.entityConfigs[entityId];
       if (entityConfig.group.action) {
         let action = entityConfig.group.action;
         if (action.service) {
-          let domain = action.domain ? action.domain : entityId.substr(0, entityId.indexOf('.'));
+          let domain = action.domain ? action.domain : window.HAWS.extractDomain(entityId);
           domain = (domain == 'group') ? 'homeassistant' : domain;
 
           let data = {};
@@ -794,7 +781,7 @@
       else {
         this.instance.fire('hass-more-info', { entityId: entityId });
       }
-    }
+    },
 
     getFill(stateConfig) {
       let fill = undefined;
@@ -814,7 +801,7 @@
       }
 
       return fill;
-    }
+    },
 
     getStroke(stateConfig) {
       let stroke = undefined;
@@ -834,7 +821,7 @@
       }
 
       return stroke;
-    }
+    },
 
     setTransitionFill(svgElement, fromFill, toFill, value) {
       if (value >= 1) {
@@ -847,7 +834,7 @@
         let color = this.rgbToHex(this.mix(this.hexToRgb(toFill), this.hexToRgb(fromFill), value));
         svgElement.style.fill = color;
       }
-    }
+    },
 
     getServerMoment() {
       let serverMoment = moment();
@@ -856,37 +843,37 @@
       else
         serverMoment.add(Math.abs(this.timeDifference), 'milliseconds');
       return serverMoment;
-    }
+    },
 
     getArray(list) {
       return Array.isArray(list) ? list : Object.keys(list).map(key => list[key]);
-    }
+    },
 
     assemble(code, entity, entities) {
       let functionBody = (code.indexOf('return') >= 0) ? code : `return \`${code}\`;`;
       let func = new Function('entity', 'entities', 'hass', 'config', functionBody);
       return func(entity, entities, this.hass, this.config);
-    }
+    },
 
     error(message) {
-      let errors = this.$.errors;
+      let errors = Polymer.dom(this.$.errors).node;
       $(errors).find('ul').append(`<li>${message}</li>`)
       $(errors).css('display', 'block');
-    }
+    },
 
     warn(message) {
       if ((this.config.warnings === null) || (this.config.warnings !== undefined)) {
-        let warnings = this.$.warnings;
+        let warnings = Polymer.dom(this.$.warnings).node;
         $(warnings).find('ul').append(`<li>${message}</li>`)
         $(warnings).css('display', 'block');
       }
-    }
+    },
 
     debug(message) {
-      let debug = this.$.debug;
+      let debug = Polymer.dom(this.$.debug).node;
       $(debug).find('ul').append(`<li>${message}</li>`)
       $(debug).css('display', 'block');
-    }
+    },
 
     loadStyleSheet(path, fn, scope) {
       let head = document.getElementsByTagName('head')[0]; // reference to document.head for appending/ removing link nodes
@@ -923,11 +910,11 @@
       head.appendChild(link);  // insert the link node into the DOM and start loading the style sheet
 
       return link; // return the link node;
-    }
+    },
 
     rgbToHex(rgb) {
       return "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1);
-    }
+    },
 
     hexToRgb(hex) {
       // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -942,7 +929,7 @@
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16)
       } : null;
-    }
+    },
 
     mix(color1, color2, weight) {
       let p = weight;
@@ -956,21 +943,6 @@
       ];
       return rgb;
     }
-
-    fire(type, detail, options) {
-      options = options || {};
-      detail = (detail === null || detail === undefined) ? {} : detail;
-      const event = new Event(type, {
-        bubbles: options.bubbles === undefined ? true : options.bubbles,
-        cancelable: Boolean(options.cancelable),
-        composed: options.composed === undefined ? true : options.composed
-      });
-      event.detail = detail;
-      const node = options.node || this;
-      node.dispatchEvent(event);
-      return event;
-    }
-  }
-  customElements.define(HaFloorplan.is, HaFloorplan);
+  });
 
 </script>
